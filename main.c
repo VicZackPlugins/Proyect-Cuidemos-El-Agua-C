@@ -17,6 +17,7 @@ FILE *temp_db;
 int filas_arreglo = 0;                          // Nro. de filas de los arreglos
 
 // ========= FUNCIONES: ========== //
+void limpiar_pantalla();
 void mostrarMenu();
 void registrarDatos(char nombre[TAM_FIJO][32], int personas[TAM_FIJO], int consumoLitros[TAM_FIJO][DIAS_SEMANA]);
 
@@ -30,7 +31,7 @@ int main() {
 
     int opciones;                               // Ingreso de una opcion
     
-    system("cls");                              // Limpiar pantalla
+    limpiar_pantalla();
     do {
         
         mostrarMenu();
@@ -47,61 +48,61 @@ int main() {
             }
             case 1: {
                 // ¿Que ODS aborda este programa?
-                system("cls");
+                limpiar_pantalla();
                 
                 break;
             }
             case 2: {
                 // Configurar elementos
-                system("cls");
+                limpiar_pantalla();
 
                 break;
             }
             case 3: {
                 // Registrar datos
-                system("cls");
+                limpiar_pantalla();
 
                 break;
             }
             case 4: {
                 // Modificar un dato
-                system("cls");
+                limpiar_pantalla();
 
                 break;
             }
             case 5: {
                 // [Operación principal del proyecto]
-                system("cls");
+                limpiar_pantalla();
 
                 break;
             }
             case 6: {
                 // Ver tabla de datos
-                system("cls");
+                limpiar_pantalla();
 
                 break;
             }
             case 7: {
                 // Ver estadísticas
-                system("cls");
+                limpiar_pantalla();
 
                 break;
             }
             case 8: {
                 // Guardar datos
-                system("cls");
+                limpiar_pantalla();
 
                 break;
             }
             case 9: {
                 // Ayuda y Acerca de
-                system("cls");
+                limpiar_pantalla();
 
                 break;
             }
             case 10: {
                 // ========== T E S T ========== //
-                system("cls");
+                limpiar_pantalla();
 
                 printf("FOR 1 (FILA)\n");
                 for(int i=0; i<TAM_FIJO; i++)
@@ -117,7 +118,7 @@ int main() {
                 break;
             }
             default: {
-                system("cls");
+                limpiar_pantalla();
                 printf("[ERROR] Debe ingresar una opcion valida.\n");
             }
 
@@ -128,6 +129,11 @@ int main() {
 
     return 0;
 
+}
+
+void limpiar_pantalla() 
+{
+    system("cls");
 }
 
 void mostrarMenu() 

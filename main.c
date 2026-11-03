@@ -1,6 +1,11 @@
 #include <stdio.h>
 
+// ======= Configuracion: ======== //
+
 #define DIAS_SEMANA 7
+#define TAM_FIJO 5
+
+// =============== //
 
 int main() {
 

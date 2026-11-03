@@ -21,13 +21,15 @@ int main() {
     
     do {
 
-        printf("[1] Regitrar Datos\n[2] Modificar Dato\n[3] Detectar Excesos\n[4] Estadisticas");
+        printf("\t[PROYECTO] CUIDEMOS EL AGUA\n\n");
+        printf("\t[1] Regitrar Datos\n\t[2] Modificar Dato\n\t[3] Detectar Excesos\n\t[4] Estadisticas\n\t[0] Salir\n");
         
         scanf("%d", &opciones);
 
-        swith(opciones) {
+        switch(opciones) {
             
             case 0: {
+                return 0;
                 break;
             }
             case 1: {
@@ -47,7 +49,7 @@ int main() {
                 break;
             }
             default: {
-                printf("[ERROR] Debe usar una opcion valida.");
+                printf("[ERROR] Debe ingresar una opcion valida.\n");
             }
 
         }

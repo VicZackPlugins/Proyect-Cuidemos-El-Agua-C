@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include <string.h>
-<<<<<<< HEAD
 
 // ======= Configuracion: ======== //
-=======
 #include <stdlib.h>
 
 // ======= Configuracion: ======== //
@@ -12,7 +10,6 @@
 #define TAM_FIJO 5
 
 // =============== //
->>>>>>> 322effd30b5edc414640c77fe6cfd022e82f00b9
 
 #define DIAS_SEMANA 7                                   /// Dias de la semana considerados para los calculos
 #define TAM_FIJO 5                                      /// D E B U G 
@@ -20,7 +17,6 @@
 // =============== //
 
 
-<<<<<<< HEAD
 int main()
 {
 
@@ -54,7 +50,6 @@ int main()
 
     return 0;
 }
-=======
     int opciones;                       // Ingreso de una opcion
     
     do {
@@ -126,4 +121,3 @@ void registrarDatos(char nombre[][32], int personas[], int consumoLitros[][DIAS_
 
     } while (litros < 5000);
 }
->>>>>>> 322effd30b5edc414640c77fe6cfd022e82f00b9

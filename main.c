@@ -14,3 +14,7 @@ int main() {
     return 0;
 
 }
+void registrarDatos(char nombre[][32], int personas[], int csumoLitros[][DIAS_SEMANA]) {
+    scanf("%d",&n);// el n es para colocar otro dato
+    printf("a");
+}

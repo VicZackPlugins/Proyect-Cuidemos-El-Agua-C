@@ -58,13 +58,33 @@ int main() {
     return 0;
 
 }
-void registrarDatos(char nombre[][32], int personas[], int csumoLitros[][DIAS_SEMANA]) { //aqui se debe arreglar
-    int cant, litros;//cantidad y litros
-    char nom;//nombre
+void registrarDatos(char nombre[][32], int personas[], int csumoLitros[][DIAS_SEMANA])
+{                     // aqui se debe arreglar
+    int cant, litros; // cantidad y litros
+    char nom;         // nombre
     printf("ingrese nombre del hogar\n");
-     scanf("%d",&nom);
+    scanf("%d", &nom);
     printf("cantidad de ocupantes de la vivienda\n");
-     scanf("%d",&cant);
-     printf("consumo de litros\n");
-     scanf("%d",&litros);
+    do
+    {
+        scanf("%d", &cant);
+
+        if (1 < cant && cant < 20)
+        {
+            printf("ERROR,datos duera de los parametros");
+        }
+
+    } while (1 < cant && cant < 20);
+
+    printf("consumo de litros\n");
+    do
+    {
+        scanf("%d", &litros);
+
+        if (litros < 20)
+        {
+            printf("ERROR,datos duera de los parametros");
+        }
+
+    } while (litros < 5000);
 }

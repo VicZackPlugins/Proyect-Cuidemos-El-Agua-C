@@ -10,7 +10,12 @@
 // =============== //
 
 int main() {
-
+    FILE *data_base;
+    /*
+        data_base = fopen("db", r); READ
+        data_base = fopen("db", w); WRITTE
+        data_base = fopen("db", a); APPEND
+    */
     char nombre[][32];                  // Nombre de los hogares
 
     int personas[],                     // Cantidad de personas por hogar

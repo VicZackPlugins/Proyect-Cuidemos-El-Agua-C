@@ -58,7 +58,7 @@ int main() {
     return 0;
 
 }
-void registrarDatos(char nombre[][32], int personas[], int csumoLitros[][DIAS_SEMANA])
+void registrarDatos(char nombre[][32], int personas[], int consumoLitros[][DIAS_SEMANA])
 {                     // aqui se debe arreglar
     int cant, litros; // cantidad y litros
     char nom;         // nombre

@@ -17,6 +17,7 @@ FILE *temp_db;
 int filas_arreglo = 0;                          // Nro. de filas de los arreglos
 
 // ========= FUNCIONES: ========== //
+void mostrarMenu();
 void registrarDatos(char nombre[TAM_FIJO][32], int personas[TAM_FIJO], int consumoLitros[TAM_FIJO][DIAS_SEMANA]);
 
 int main() {
@@ -31,45 +32,74 @@ int main() {
     
     system("cls");                              // Limpiar pantalla
     do {
-    
-        printf("\n[PROYECTO] CUIDEMOS EL AGUA\n\n");
-        printf("\t[1] Regitrar Datos\n\t[2] Modificar Dato\n\t[3] Detectar Excesos\n\t[4] Estadisticas\n\t[0] Salir\n\n>> ");
+        
+        mostrarMenu();
         
         scanf("%d", &opciones);
 
         switch(opciones) {
             
             case 0: {
-                // ====== Cerrar Programa ====== //
+                // Cerrar Programa
                 return 0;
                 
                 break;
             }
             case 1: {
-                // ====== Registrar Datos ====== //
+                // ¿Que ODS aborda este programa?
                 system("cls");
                 
                 break;
             }
             case 2: {
-                // ======= Modificar Dato ====== //
+                // Configurar elementos
                 system("cls");
 
                 break;
             }
             case 3: {
-                // ====== Detectar excesos ===== //
+                // Registrar datos
                 system("cls");
 
                 break;
             }
             case 4: {
-                // ======== Estadisticas ======= //
+                // Modificar un dato
                 system("cls");
 
                 break;
             }
             case 5: {
+                // [Operación principal del proyecto]
+                system("cls");
+
+                break;
+            }
+            case 6: {
+                // Ver tabla de datos
+                system("cls");
+
+                break;
+            }
+            case 7: {
+                // Ver estadísticas
+                system("cls");
+
+                break;
+            }
+            case 8: {
+                // Guardar datos
+                system("cls");
+
+                break;
+            }
+            case 9: {
+                // Ayuda y Acerca de
+                system("cls");
+
+                break;
+            }
+            case 10: {
                 // ========== T E S T ========== //
                 system("cls");
 
@@ -98,6 +128,18 @@ int main() {
 
     return 0;
 
+}
+
+void mostrarMenu() 
+{
+    printf("\n==========================================\n");
+    printf("\t[PROYECTO] CUIDEMOS EL AGUA\n");
+    printf("==========================================\n");
+    printf("\t1. ¿Que ODS aborda este programa? \n\t2. Configurar elementos \n\t3. Registrar datos \n\t4. Modificar un dato");
+    printf("\t5. [Operación principal del proyecto] \n\t6. Ver tabla de datos \n\t7. Ver estadisticas \n\t8. Guardar datos");
+    printf("\t9. Ayuda y Acerca de \n\t0. Salir \n");
+    printf("==========================================\n");
+    printf("Elija una opcion: ");
 }
 
 void registrarDatos(char nombre[TAM_FIJO][32], int personas[TAM_FIJO], int consumoLitros[TAM_FIJO][DIAS_SEMANA]) 

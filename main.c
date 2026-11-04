@@ -7,8 +7,9 @@
 #define DIAS_SEMANA 7
 #define TAM_FIJO 5
 
-FILE *data_base;
-FILE *temp_db;
+FILE *data_base;    // Filas y Columna de datos
+FILE *temp_db;      // Archivo temporal para modificar datos
+FILE *datos;        // Guardar el nro de filas de los arreglos
 
 // data_base = fopen("db.txt", r); READ
 // data_base = fopen("db.txt", w); WRITTE

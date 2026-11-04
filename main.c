@@ -15,8 +15,6 @@ FILE *datos;        // Guardar el nro de filas de los arreglos
 // data_base = fopen("db.txt", w); WRITTE
 // data_base = fopen("db.txt", a); APPEND
 
-int filas_arreglo = 0;                          // Nro. de filas de los arreglos
-
 // ========= FUNCIONES: ========== //
 void limpiar_pantalla();
 void mostrarMenu();
@@ -37,7 +35,17 @@ int main() {
         
         mostrarMenu();
         
-        scanf("%d", &opciones);
+        int s_op;                               // Variable para el scanf de opciones
+
+        while ((s_op = scanf("%d", &opciones)) != 1) {
+            
+            limpiar_pantalla();
+            printf("[ERROR] Debe ingresar una opcion valida.\n");
+
+            while (getchar() != '\n');
+            
+            mostrarMenu();
+        }
 
         switch(opciones) {
             

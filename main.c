@@ -139,11 +139,11 @@ void limpiar_pantalla()
 void mostrarMenu() 
 {
     printf("\n==========================================\n");
-    printf("\t[PROYECTO] CUIDEMOS EL AGUA\n");
+    printf("   [PROYECTO] CUIDEMOS EL AGUA\n");
     printf("==========================================\n");
-    printf("\t1. ¿Que ODS aborda este programa? \n\t2. Configurar elementos \n\t3. Registrar datos \n\t4. Modificar un dato\n");
-    printf("\t5. [Operacion principal del proyecto] \n\t6. Ver tabla de datos \n\t7. Ver estadisticas \n\t8. Guardar datos\n");
-    printf("\t9. Ayuda y Acerca de \n\t0. Salir \n");
+    printf(" 1. ¿Que ODS aborda este programa? \n 2. Configurar elementos \n 3. Registrar datos \n 4. Modificar un dato\n");
+    printf(" 5. [Operacion principal del proyecto] \n 6. Ver tabla de datos \n 7. Ver estadisticas \n 8. Guardar datos\n");
+    printf(" 9. Ayuda y Acerca de \n 0. Salir \n");
     printf("==========================================\n");
     printf("Elija una opcion: ");
 }

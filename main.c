@@ -11,15 +11,22 @@ FILE *data_base;    // Filas y Columna de datos
 FILE *temp_db;      // Archivo temporal para modificar datos
 FILE *datos;        // Guardar el nro de filas de los arreglos
 
+char nombre_db[16] = "db.txt";
+char nombre_temp[16] = "temp.txt";
+char nombre_datos[16] = "datos.txt";
+
 // data_base = fopen("db.txt", r); READ
 // data_base = fopen("db.txt", w); WRITTE
 // data_base = fopen("db.txt", a); APPEND
+// fclose(file)
 
 // ========= FUNCIONES: ========== //
 
 void limpiar_pantalla();
 void mostrarMenu();
 void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], int consumoLitros[MAX_DATOS][DIAS_SEMANA]);
+int obtener_datos();
+void actualizar_cantidad_datos(int cantidad);
 
 int main() {
     
@@ -126,6 +133,25 @@ int main() {
 
                 break;
             }
+            case 11: {
+                // ========== T E S T ========== //
+                limpiar_pantalla();
+
+                printf("Valor: %d", obtener_datos());
+                
+
+                break;
+            }
+            case 12: {
+                // ========== T E S T ========== //
+                limpiar_pantalla();
+                int test;
+                scanf("%d", &test);
+
+                actualizar_cantidad_datos(test);
+                
+                break;
+            }
             default: {
                 limpiar_pantalla();
                 printf("[ERROR] Debe ingresar una opcion valida.\n");
@@ -161,48 +187,43 @@ void mostrarMenu()
 
 // ========= J U A N J O S E ========= //
 
-// CODIGO INICIANDO ESTA LINEA (REEMPLAZAR ESTA LINEA)
-
-// ============ E L I A S ============ //
-
 void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], int consumoLitros[MAX_DATOS][DIAS_SEMANA]) 
 {
-    
-    int cant,                               // Cantidad de personas
-        litros;                             // Consumo de litros
-
-    char nom[32];                           // Nombre del hogar
-
-    printf("Ingrese el nombre del hogar:\n>> ");
-    scanf("%s", nom);
-
-    printf("Cantidad de ocupantes de la vivienda:\n>> ");
-    do
+    for(int i=0; i<DIAS_SEMANA; i++)
     {
-        scanf("%d", &cant);
-
-        if (cant < 1 || cant > 20) // && Cambiado por || // (1 > cant && cant < 20) Cambiado por (cant < 1 || cant > 20)
+        for(int j=0; j<MAX_DATOS; j++)
         {
-            printf("[ERROR] Datos fuera de los parametros.\n");
+            
         }
-
-    } while (cant < 1 || cant > 20); // && Cambiado por || // (1 > cant && cant < 20) Cambiado por (cant < 1 || cant > 20)
-
-    printf("Consumo de litros del hogar:\n>> ");
-    do
-    {
-        scanf("%d", &litros);
-
-        if (litros > 5000) // 20 Cambiado por 5000 // (litros < 20) Cambiado por (litros > 5000)
-        {
-            printf("[ERROR] Datos fuera de los parametros.\n");
-        }
-
-    } while (litros > 5000); // (litros < 20) Cambiado por (litros > 5000)
+    }
 
     // INICIAR ESPACIO PARA AGREGAR DATOS AL db.txt
     // USAR fopen("db.txt", a) y fprintf()
     // PONER IF VERIFICANDO SI fopen("db.txt", a) ES NULL O NO
     // FINALMENTE USAR fclose(data_base);
 
+}
+
+// ============ E L I A S ============ //
+
+int obtener_datos() {
+
+    int cantidad_datos = 0;
+    printf("funcion obtener datos usado\n");
+    datos = fopen("datos.txt", "r");
+    fscanf(datos, "%d", &cantidad_datos);
+    fclose (datos);
+    printf("%d\n", cantidad_datos);
+
+    return cantidad_datos;
+}
+
+void actualizar_cantidad_datos(int cantidad) {
+
+    int cantidad_datos_actuales = obtener_datos();
+    int nueva_cantidad = cantidad_datos_actuales + cantidad;
+    printf("funcion actualizar usada\n");
+    datos=fopen("datos.txt", "w");
+    fprintf(datos, "%d", nueva_cantidad);
+    fclose(datos);
 }

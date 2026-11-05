@@ -5,7 +5,7 @@
 // ======= CONFIGURACION: ======== //
 
 #define DIAS_SEMANA 7
-#define TAM_FIJO 5
+#define MAX_DATOS 10
 
 FILE *data_base;    // Filas y Columna de datos
 FILE *temp_db;      // Archivo temporal para modificar datos
@@ -16,19 +16,21 @@ FILE *datos;        // Guardar el nro de filas de los arreglos
 // data_base = fopen("db.txt", a); APPEND
 
 // ========= FUNCIONES: ========== //
+
 void limpiar_pantalla();
 void mostrarMenu();
-void registrarDatos(char nombre[TAM_FIJO][32], int personas[TAM_FIJO], int consumoLitros[TAM_FIJO][DIAS_SEMANA]);
+void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], int consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 
 int main() {
     
-    char nombre[TAM_FIJO][32];                  // Nombre de los hogares
+    char nombre[MAX_DATOS][32];                  // Nombre de los hogares
 
-    int personas[TAM_FIJO],                     // Cantidad de personas por hogar
-        limiteDiario[TAM_FIJO],                 // Promedio litros a la semana por hogar
-        consumoLitros[TAM_FIJO][DIAS_SEMANA];   // Consumo de litros por hogar por día
+    int personas[MAX_DATOS];                     // Cantidad de personas por hogar
 
-    int opciones;                               // Ingreso de una opcion
+    float limiteDiario[MAX_DATOS],               // Promedio litros a la semana por hogar
+          consumoLitros[MAX_DATOS][DIAS_SEMANA]; // Consumo de litros por hogar por día
+
+    int opciones;                                // Ingreso de una opcion
     
     limpiar_pantalla();
     do {
@@ -52,8 +54,6 @@ int main() {
             case 0: {
                 // Cerrar Programa
                 return 0;
-                
-                break;
             }
             case 1: {
                 // ¿Que ODS aborda este programa?
@@ -114,13 +114,13 @@ int main() {
                 limpiar_pantalla();
 
                 printf("FOR 1 (FILA)\n");
-                for(int i=0; i<TAM_FIJO; i++)
+                for(int i=0; i<MAX_DATOS; i++)
                 {
                     printf("FOR 2 (COLUMNA)\n");
                     for(int j=0; j<DIAS_SEMANA; j++)
                     {
-                        printf("Escaneo consumo litros [%d][%d]\n", i, j);
-                        scanf("%d", &consumoLitros[i][j]);
+                        printf("Escaneo consumo litros [%.2f][%.2f]\n", i, j);
+                        scanf("%f", &consumoLitros[i][j]);
                     }
                 }
 
@@ -140,6 +140,8 @@ int main() {
 
 }
 
+// ========== V I C E N T E ========== //
+
 void limpiar_pantalla() 
 {
     system("cls");
@@ -148,7 +150,7 @@ void limpiar_pantalla()
 void mostrarMenu() 
 {
     printf("\n==========================================\n");
-    printf("   [PROYECTO] CUIDEMOS EL AGUA\n");
+    printf("   [PROYECTO] CUIDEMOS EL AGUA - ODS Nro 6\n");
     printf("==========================================\n");
     printf(" 1. ¿Que ODS aborda este programa? \n 2. Configurar elementos \n 3. Registrar datos \n 4. Modificar un dato\n");
     printf(" 5. [Operacion principal del proyecto] \n 6. Ver tabla de datos \n 7. Ver estadisticas \n 8. Guardar datos\n");
@@ -157,7 +159,13 @@ void mostrarMenu()
     printf("Elija una opcion: ");
 }
 
-void registrarDatos(char nombre[TAM_FIJO][32], int personas[TAM_FIJO], int consumoLitros[TAM_FIJO][DIAS_SEMANA]) 
+// ========= J U A N J O S E ========= //
+
+// CODIGO INICIANDO ESTA LINEA (REEMPLAZAR ESTA LINEA)
+
+// ============ E L I A S ============ //
+
+void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], int consumoLitros[MAX_DATOS][DIAS_SEMANA]) 
 {
     
     int cant,                               // Cantidad de personas

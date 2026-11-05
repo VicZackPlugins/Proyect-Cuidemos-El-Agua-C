@@ -14,6 +14,7 @@ FILE *datos;        // Guardar el nro de filas de los arreglos
 // data_base = fopen("db.txt", r); READ
 // data_base = fopen("db.txt", w); WRITTE
 // data_base = fopen("db.txt", a); APPEND
+// fclose(file)
 
 // ========= FUNCIONES: ========== //
 
@@ -161,44 +162,15 @@ void mostrarMenu()
 
 // ========= J U A N J O S E ========= //
 
-// CODIGO INICIANDO ESTA LINEA (REEMPLAZAR ESTA LINEA)
-
-// ============ E L I A S ============ //
-
 void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], int consumoLitros[MAX_DATOS][DIAS_SEMANA]) 
 {
-    
-    int cant,                               // Cantidad de personas
-        litros;                             // Consumo de litros
-
-    char nom[32];                           // Nombre del hogar
-
-    printf("Ingrese el nombre del hogar:\n>> ");
-    scanf("%s", nom);
-
-    printf("Cantidad de ocupantes de la vivienda:\n>> ");
-    do
+    for(int i=0; i<DIAS_SEMANA; i++)
     {
-        scanf("%d", &cant);
-
-        if (cant < 1 || cant > 20) // && Cambiado por || // (1 > cant && cant < 20) Cambiado por (cant < 1 || cant > 20)
+        for(int j=0; j<MAX_DATOS; j++)
         {
-            printf("[ERROR] Datos fuera de los parametros.\n");
+            
         }
-
-    } while (cant < 1 || cant > 20); // && Cambiado por || // (1 > cant && cant < 20) Cambiado por (cant < 1 || cant > 20)
-
-    printf("Consumo de litros del hogar:\n>> ");
-    do
-    {
-        scanf("%d", &litros);
-
-        if (litros > 5000) // 20 Cambiado por 5000 // (litros < 20) Cambiado por (litros > 5000)
-        {
-            printf("[ERROR] Datos fuera de los parametros.\n");
-        }
-
-    } while (litros > 5000); // (litros < 20) Cambiado por (litros > 5000)
+    }
 
     // INICIAR ESPACIO PARA AGREGAR DATOS AL db.txt
     // USAR fopen("db.txt", a) y fprintf()
@@ -206,3 +178,7 @@ void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], int con
     // FINALMENTE USAR fclose(data_base);
 
 }
+
+// CODIGO INICIANDO ESTA LINEA (REEMPLAZAR ESTA LINEA)
+
+// ============ E L I A S ============ //

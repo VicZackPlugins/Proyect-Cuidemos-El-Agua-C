@@ -6,6 +6,7 @@
 
 #define DIAS_SEMANA 7
 #define MAX_DATOS 10
+#define HOGAR 3
 
 FILE *data_base;    // Filas y Columna de datos
 FILE *temp_db;      // Archivo temporal para modificar datos
@@ -25,6 +26,7 @@ char nombre_datos[16] = "datos.txt";
 void limpiar_pantalla();
 void mostrarMenu();
 void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], int consumoLitros[MAX_DATOS][DIAS_SEMANA]);
+void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[HOGAR][DIAS_SEMANA]);
 int obtener_datos();
 void actualizar_cantidad_datos(int cantidad);
 
@@ -40,6 +42,7 @@ int main() {
     int opciones;                                // Ingreso de una opcion
     
     limpiar_pantalla();
+
     do {
         
         mostrarMenu();
@@ -133,25 +136,6 @@ int main() {
 
                 break;
             }
-            case 11: {
-                // ========== T E S T ========== //
-                limpiar_pantalla();
-
-                printf("Valor: %d", obtener_datos());
-                
-
-                break;
-            }
-            case 12: {
-                // ========== T E S T ========== //
-                limpiar_pantalla();
-                int test;
-                scanf("%d", &test);
-
-                actualizar_cantidad_datos(test);
-                
-                break;
-            }
             default: {
                 limpiar_pantalla();
                 printf("[ERROR] Debe ingresar una opcion valida.\n");
@@ -187,20 +171,48 @@ void mostrarMenu()
 
 // ========= J U A N J O S E ========= //
 
-void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], int consumoLitros[MAX_DATOS][DIAS_SEMANA]) 
-{
-    for(int i=0; i<DIAS_SEMANA; i++)
+void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoDiario[]) {
+    printf("========= Configuracion =========");
+
+    // scanf("%d");
+    // switch
+
+
+
+
+}
+
+
+void RegistrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[HOGAR][DIAS_SEMANA]) {
+
+    for(int i=0; i<HOGAR; i++)
     {
-        for(int j=0; j<MAX_DATOS; j++)
+        printf("============ Hogar %d ============\n", i+1);
+        printf("\n");
+        for(int j=0; j<DIAS_SEMANA; j++)
         {
-            
+            do
+            {
+                printf("CONSUMO DIA %d : ", j+1);
+                scanf("%f", &consumoLitros[i][j]);
+                printf("\n");
+                if (consumoLitros[i][j]>5000 || consumoLitros[i][j]<0)
+                {
+                    printf("ERROR: valor fuera de rango, intentalo denuevo\n");
+                }
+            }while(consumoLitros[i][j]>5000 || consumoLitros[i][j]<0);         
         }
     }
 
-    // INICIAR ESPACIO PARA AGREGAR DATOS AL db.txt
-    // USAR fopen("db.txt", a) y fprintf()
-    // PONER IF VERIFICANDO SI fopen("db.txt", a) ES NULL O NO
-    // FINALMENTE USAR fclose(data_base);
+
+    /// REGISTRO DE DATOS POR PASO
+    // 1: NOMBRE DEL HOGAR
+    // 2: CANTIDAD DE PERSONAS
+    // 3: LIMITE DIARIO
+
+
+
+    // bitacora git:
 
 }
 

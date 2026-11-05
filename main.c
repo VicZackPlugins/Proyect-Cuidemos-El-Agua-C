@@ -11,9 +11,9 @@ FILE *data_base;    // Filas y Columna de datos
 FILE *temp_db;      // Archivo temporal para modificar datos
 FILE *datos;        // Guardar el nro de filas de los arreglos
 
-char nombre_db[8] = "db.txt";
-char nombre_temp[8] = "temp.txt";
-char nombre_datos[8] = "datos.txt";
+char nombre_db[16] = "db.txt";
+char nombre_temp[16] = "temp.txt";
+char nombre_datos[16] = "datos.txt";
 
 // data_base = fopen("db.txt", r); READ
 // data_base = fopen("db.txt", w); WRITTE

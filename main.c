@@ -11,6 +11,10 @@ FILE *data_base;    // Filas y Columna de datos
 FILE *temp_db;      // Archivo temporal para modificar datos
 FILE *datos;        // Guardar el nro de filas de los arreglos
 
+char nombre_db[8] = "db.txt";
+char nombre_temp[8] = "temp.txt";
+char nombre_datos[8] = "datos.txt";
+
 // data_base = fopen("db.txt", r); READ
 // data_base = fopen("db.txt", w); WRITTE
 // data_base = fopen("db.txt", a); APPEND
@@ -178,7 +182,5 @@ void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], int con
     // FINALMENTE USAR fclose(data_base);
 
 }
-
-// CODIGO INICIANDO ESTA LINEA (REEMPLAZAR ESTA LINEA)
 
 // ============ E L I A S ============ //

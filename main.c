@@ -8,15 +8,11 @@
 #define MAX_DATOS 10
 #define HOGAR 3
 
-FILE *vectores;     // Filas y Columna de datos de los vectores
-FILE *matriz;       // Filas y Columna de datos de la matriz
+FILE *datos;        // Datos guardados
 FILE *temp;         // Archivo temporal para modificar datos
-FILE *datos;        // Guardar el nro de filas de los arreglos
 
-char nombre_vectores[] = "vectores.txt";
-char nombre_matriz[] = "matriz.txt";
+char nombre_datos[] = "datos.txt";
 char nombre_temp[] = "temp.txt";
-char nombre_datos[] = "nro_datos.txt";
 
 // data_base = fopen("db.txt", r); READ
 // data_base = fopen("db.txt", w); WRITTE
@@ -200,54 +196,6 @@ void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
     int personas_temp;
     float limD_temp, conL_temp;
 
-    vectores = fopen(nombre_vectores, "r");
-    if (vectores == NULL) {
-        printf("[AVISO] No hay datos guardados, se inicia vacio.\n");
-
-        vectores = fopen(nombre_vectores, "w"); fclose(vectores);
-        matriz = fopen(nombre_matriz, "w"); fclose(matriz);
-
-        actualizar_cantidad_datos(-(obtener_datos()));
-
-        return;
-    }
-
-    if (obtener_datos() == 0) { 
-        printf("[AVISO] No hay datos guardados, se inicia vacio.\n");
-        return;
-    }
-    
-    matriz = fopen(nombre_matriz, "r");
-
-    for (int i = 0; i < obtener_datos(); i++) {
-        fscanf(vectores, "%s %d %f", nombre_temp, &personas_temp, &limD_temp);
-
-        strcpy(nombre[i], nombre_temp);
-        personas[i] = personas_temp;
-        limiteDiario[i] = limD_temp;
-
-        for (int v = 0; v < DIAS_SEMANA; v++) {
-            fscanf(matriz, "%f", &conL_temp);
-
-            consumoLitros[i][v] = conL_temp;
-        }
-    }
-
-    fclose(vectores); fclose(matriz);
-
-    printf("[AVISO] Datos cargados correctamente.\n");
-    /*
-    DEBUG
-
-    for (int i = 0; i < obtener_datos(); i++) {
-        printf("%s %d %f ", nombre[i], personas[i], limiteDiario[i]);
-        
-        for (int v = 0; v < DIAS_SEMANA; v++) {
-            printf("%f ", consumoLitros[i][v]);
-        }
-        printf("\n");
-    }
-    */
 }
 
 // ========= J U A N J O S E ========= //
@@ -257,9 +205,6 @@ void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
 
     // scanf("%d");
     // switch
-
-
-
 
 }
 

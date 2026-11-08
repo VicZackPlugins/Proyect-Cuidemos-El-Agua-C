@@ -6,7 +6,6 @@
 
 #define DIAS_SEMANA 7
 #define MAX_DATOS 10
-#define HOGAR 3
 
 FILE *datos;        // Datos guardados
 FILE *temp;         // Archivo temporal para modificar datos
@@ -26,20 +25,20 @@ void mostrarMenu();
 void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 
-void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[HOGAR][DIAS_SEMANA]);
-void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[HOGAR]);
+void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
+void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS]);
 
 int obtener_datos();
 void actualizar_cantidad_datos(int cantidad);
 
 int main() {
     
-    char nombre[MAX_DATOS][32];                  // Nombre de los hogares
+    char nombre[MAX_DATOS][32];                  // Nombre de los MAX_DATOSes
 
-    int personas[MAX_DATOS];                     // Cantidad de personas por hogar
+    int personas[MAX_DATOS];                     // Cantidad de personas por MAX_DATOS
 
-    float limiteDiario[MAX_DATOS],               // Promedio litros a la semana por hogar
-          consumoLitros[MAX_DATOS][DIAS_SEMANA]; // Consumo de litros por hogar por día
+    float limiteDiario[MAX_DATOS],               // Promedio litros a la semana por MAX_DATOS
+          consumoLitros[MAX_DATOS][DIAS_SEMANA]; // Consumo de litros por MAX_DATOS por día
 
     // Iniciar arreglos con valores por defecto (0 o "")
     iniciarArreglos(nombre, personas, limiteDiario, consumoLitros);
@@ -200,7 +199,7 @@ void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
 
 // ========= J U A N J O S E ========= //
 
-void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[HOGAR]) {
+void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS]) {
     printf("========= Configuracion =========");
 
     // scanf("%d");
@@ -209,11 +208,11 @@ void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
 }
 
 
-void RegistrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[HOGAR][DIAS_SEMANA]) {
+void RegistrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
 
-    for(int i=0; i<HOGAR; i++)
+    for(int i=0; i<MAX_DATOS; i++)
     {
-        printf("============ Hogar %d ============\n", i+1);
+        printf("============ MAX_DATOS %d ============\n", i+1);
         printf("\n");
         for(int j=0; j<DIAS_SEMANA; j++)
         {
@@ -232,7 +231,7 @@ void RegistrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float c
 
 
     /// REGISTRO DE DATOS POR PASO
-    // 1: NOMBRE DEL HOGAR
+    // 1: NOMBRE DEL MAX_DATOS
     // 2: CANTIDAD DE PERSONAS
     // 3: LIMITE DIARIO
 

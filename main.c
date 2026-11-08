@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <windows.h>
 
 // ======= CONFIGURACION: ======== //
 
@@ -8,15 +9,15 @@
 #define MAX_DATOS 10
 
 FILE *datos;        // Datos guardados
-FILE *temp;         // Archivo temporal para modificar datos
 
 char nombre_datos[] = "datos.txt";
-char nombre_temp[] = "temp.txt";
 
-// data_base = fopen("db.txt", r); READ
-// data_base = fopen("db.txt", w); WRITTE
-// data_base = fopen("db.txt", a); APPEND
+// datos = fopen("db.txt", r); READ
+// datos = fopen("db.txt", w); WRITTE
+// datos = fopen("db.txt", a); APPEND
 // fclose(file)
+
+int cantidadDatos = 0;
 
 // ========= FUNCIONES: ========== //
 
@@ -29,19 +30,20 @@ void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float c
 void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS]);
 
 int obtener_datos();
-void actualizar_cantidad_datos(int cantidad);
+void aumentar_cantidad_datos();
 
 int main() {
     
     char nombre[MAX_DATOS][32];                  // Nombre de los MAX_DATOSes
 
-    int personas[MAX_DATOS];                     // Cantidad de personas por MAX_DATOS
+    int personas[MAX_DATOS];                     // Cantidad de personas por MAX_DATOS                     
 
     float limiteDiario[MAX_DATOS],               // Promedio litros a la semana por MAX_DATOS
           consumoLitros[MAX_DATOS][DIAS_SEMANA]; // Consumo de litros por MAX_DATOS por día
 
     // Iniciar arreglos con valores por defecto (0 o "")
     iniciarArreglos(nombre, personas, limiteDiario, consumoLitros);
+    cantidadDatos = obtener_datos();
 
     int opciones;                                // Ingreso de una opcion
     
@@ -52,7 +54,7 @@ int main() {
         
         mostrarMenu();
         
-        int s_op;                               // Variable para el scanf de opciones
+        int s_op;                                // Variable para el scanf de opciones
 
         while ((s_op = scanf("%d", &opciones)) != 1) {
             
@@ -63,7 +65,7 @@ int main() {
             
             mostrarMenu();
         }
-
+        
         switch(opciones) {
             
             case 0: {
@@ -129,16 +131,7 @@ int main() {
                 // ========== T E S T ========== //
                 limpiar_pantalla();
 
-                printf("FOR 1 (FILA)\n");
-                for(int i=0; i<MAX_DATOS; i++)
-                {
-                    printf("FOR 2 (COLUMNA)\n");
-                    for(int j=0; j<DIAS_SEMANA; j++)
-                    {
-                        printf("Escaneo consumo litros [%.2f][%.2f]\n", i, j);
-                        scanf("%f", &consumoLitros[i][j]);
-                    }
-                }
+                aumentar_cantidad_datos();
 
                 break;
             }
@@ -190,12 +183,55 @@ void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float 
 }
 
 void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
-    
-    char nombre_temp[32];
-    int personas_temp;
-    float limD_temp, conL_temp;
+
+    datos = fopen(nombre_datos, "r");
+    if (datos == NULL) {
+        printf("[AVISO] No hay datos guardados, se inicia vacio.\n");
+
+        fopen(nombre_datos, "w");
+        if (datos != NULL) fclose(datos);
+
+        return;
+    }
+
+    char buffer[128];
+
+    int linea = 1, index = 0;
+
+    while(fgets(buffer, sizeof(buffer), datos) != NULL) {
+        if (linea == 1) {
+            sscanf(buffer, "%d", &cantidadDatos);
+            linea++;
+            continue;
+        }
+
+        if (linea <= (cantidadDatos + 1)) {
+            sscanf(buffer, "%s %d %f", nombre[index], &personas[index], &limiteDiario[index]);
+            index++;
+            linea++;
+
+            if (index >= cantidadDatos) index = 0;
+
+            continue;
+        }
+
+        if (linea > (cantidadDatos + 1)) {
+            for (int i = 0; i < DIAS_SEMANA; i++) {
+                sscanf(buffer, "%f", &consumoLitros[index][i]);
+            }
+            
+            index++;
+            linea++;
+        }
+    }
+
+    fclose(datos);
+
+    printf("[AVISO] Datos cargados correctamente.\n");
 
 }
+
+// CREAR FUNCION GUARDAR DATOS
 
 // ========= J U A N J O S E ========= //
 
@@ -259,13 +295,9 @@ int obtener_datos() {
     return cantidad_datos;
 }
 
-void actualizar_cantidad_datos(int cantidad) {
+void aumentar_cantidad_datos() {
 
-    int cantidad_datos_actuales = obtener_datos();
-    int nueva_cantidad = cantidad_datos_actuales + cantidad;
-
-    datos=fopen(nombre_datos, "w");
-    fprintf(datos, "%d", nueva_cantidad);
-
-    fclose(datos);
+    cantidadDatos += 1;
 }
+
+

@@ -26,19 +26,22 @@ void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float 
 void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 
 void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
-void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS]);
+
+void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
+int Buscar_Hogar(char nombre_hogar[32]);
 
 int obtener_datos();
 void actualizar_cantidad_datos(int cantidad);
 
 int main() {
     
-    char nombre[MAX_DATOS][32];                  // Nombre de los MAX_DATOSes
+    char nombre[MAX_DATOS][32];                  // Nombre de los hogares
 
-    int personas[MAX_DATOS];                     // Cantidad de personas por MAX_DATOS
+    int personas[MAX_DATOS],                     // Cantidad de personas por hogar
+        hogares_cant[MAX_DATOS];                 // Cantidad de hogares a evaluar
 
-    float limiteDiario[MAX_DATOS],               // Promedio litros a la semana por MAX_DATOS
-          consumoLitros[MAX_DATOS][DIAS_SEMANA]; // Consumo de litros por MAX_DATOS por día
+    float limiteDiario[MAX_DATOS],               // Promedio litros a la semana por hogar
+          consumoLitros[MAX_DATOS][DIAS_SEMANA]; // Consumo de litros por hogar por día
 
     // Iniciar arreglos con valores por defecto (0 o "")
     iniciarArreglos(nombre, personas, limiteDiario, consumoLitros);
@@ -80,6 +83,8 @@ int main() {
             case 2: {
                 // Configurar elementos
                 limpiar_pantalla();
+
+                ConfigurarElementos(nombre, personas, limiteDiario, consumoLitros);
 
                 break;
             }
@@ -186,7 +191,6 @@ void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float 
             consumoLitros[i][v] = 0;
         }
     }
-
 }
 
 void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
@@ -199,47 +203,122 @@ void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
 
 // ========= J U A N J O S E ========= //
 
-void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS]) {
-    printf("========= Configuracion =========");
+/*          >> Configurar Elementos
+            >> Buscar_Hogar
+            >> 
+*/ 
 
-    // scanf("%d");
-    // switch
+int Buscar_Hogar(char nombre_hogar[32])
+{
+    datos = fopen(nombre_datos, "r"); // abrimos el archivo con los datos en forma "read"
 
-}
+    int cantidad_datos = obtener_datos(); /// llamamos a la funcion obtener datos para
+    // obtener la cantidad de los datos disponibles
+    /// Creamos archivos temporales que nos serviran para 
+    /// identificar el hogar que estamos buscando segun
+    /// sus valores
 
+    char nombre_temp[32];
+    int personas_temp;
+    float Consumo_Litros_Temp;
 
-void RegistrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
+    for (int i=0; i< (cantidad_datos+1); i++) 
 
-    for(int i=0; i<MAX_DATOS; i++)
+    //// Sumamos +1 a cantidad de datos para
+    //// poder leer las lineas necesarias, ya que si no lo hacemos, se leera una linea menos 
+    //// de la que nos interesa
+
     {
-        printf("============ MAX_DATOS %d ============\n", i+1);
-        printf("\n");
-        for(int j=0; j<DIAS_SEMANA; j++)
+        if(i==0)
         {
-            do
-            {
-                printf("CONSUMO DIA %d : ", j+1);
-                scanf("%f", &consumoLitros[i][j]);
-                printf("\n");
-                if (consumoLitros[i][j]>5000 || consumoLitros[i][j]<0)
-                {
-                    printf("ERROR: valor fuera de rango, intentalo denuevo\n");
-                }
-            } while(consumoLitros[i][j]>5000 || consumoLitros[i][j]<0);         
+            continue; /// ignoramos la primera linea
+        }
+
+        fscanf(datos, "%s %d %f", nombre_temp, personas_temp, Consumo_Litros_Temp);
+
+        /// leemos los datos con los valores de las variables temporales para verificar
+        /// si los elementos almacenados coinciden, es decir, que existan dentro de los
+        /// datos almacenados con los mismos nombres de las variables temporales
+
+        if(nombre_hogar == nombre_temp) 
+
+        /// si el nombre del hogar coincide con el temporal
+        /// significa que existe
+
+        {
+            fclose(datos); 
+
+            //// cerramos el archivo en el que se almacenan los datos
+            /// para evitar errores
+
+            return 1;
         }
     }
 
+    fclose(datos);
+    return 0;
 
-    /// REGISTRO DE DATOS POR PASO
-    // 1: NOMBRE DEL MAX_DATOS
-    // 2: CANTIDAD DE PERSONAS
-    // 3: LIMITE DIARIO
-
-
-
-    // bitacora git:
-
+    //// cerramos el archivo en el que se almacenan los datos
+    /// para evitar errores
+    
 }
+
+void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) 
+{
+    //// inicializamos los elementos para que tengan un valor 
+    
+    int cantidad_datos = 0;
+
+    printf("========= Configuracion =========\n");
+
+    printf("Ingresa que dato quieres configurar\n");
+
+    printf("Nombre del hogar\n >> "); //// Nombre del hogar a evaluar
+    scanf("%s", nombre[cantidad_datos]);
+
+    printf("Cantidad Personas\n >> "); //// cantidad de personas en un hogar
+    scanf("%d", personas[cantidad_datos]);
+
+    printf("Limite diario maximo\n >> "); //// Limite diario maximo para este hogar
+    scanf("%f", limiteDiario[cantidad_datos]);
+
+    for(int i=0; i<DIAS_SEMANA; i++) {
+        consumoLitros[cantidad_datos][i]=0;
+    } 
+}
+
+void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA])
+{
+
+    char input_usuario[32];
+    int index_hogar;
+
+    do {
+
+        scanf("%s", input_usuario);
+
+        index_hogar = Buscar_Hogar(input_usuario);
+
+        if (index_hogar  == 0) {
+            printf("El elemento no existe. Ingrese otro porfavor\n>> ");
+        }
+
+    } while (index_hogar == 0);
+
+    // SCANF PIDIENDO EL DIA DE LA SEMANA
+    int input_dia;
+    scanf("%d", input_dia);
+    // APLICAR VERIFICACIONES ENTRE 1 a 7
+
+    // SCANF PIDIENDO EL VALOR DE ESE DIA
+    int input_valor;
+    scanf("%d", input_valor);
+    // APLICAR VERIFICACIONES HASTA 5000
+
+    consumoLitros[index_hogar][input_dia - 1] = input_valor;
+}
+
+
 
 // ============ E L I A S ============ //
 

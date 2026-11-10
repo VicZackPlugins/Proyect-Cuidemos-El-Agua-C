@@ -1,13 +1,10 @@
-# Ejecutables
-*.exe
-*.out
+# 1. Ignorar absolutamente todo en el proyecto
+*
 
-# Archivos objeto
-*.o
-*.obj
+# 2. Permitir carpetas para que Git pueda buscar archivos dentro de ellas
+!*/
 
-# Carpeta de configuración de VS Code
-.vscode/
-
-# TXT
-*.txt
+# 3. Excepciones: Mantener solo archivos .c, .md y el propio .gitignore
+!*.c
+!*.md
+!.gitignore

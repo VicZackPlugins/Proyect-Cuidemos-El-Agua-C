@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <windows.h>
 
 // ======= CONFIGURACION: ======== //
 
@@ -25,6 +24,7 @@ void limpiar_pantalla();
 void mostrarMenu();
 void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
+void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 
 void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 
@@ -135,7 +135,19 @@ int main() {
                 // ========== T E S T ========== //
                 limpiar_pantalla();
 
-                aumentar_cantidad_datos();
+                cantidadDatos = 3;
+                
+                for (int i = 0; i < cantidadDatos; i++) {
+                    strcpy(nombre[i], "NOMBRE");
+                    personas[i] = 20;
+                    limiteDiario[i] = 5.5;
+
+                    for (int v = 0; v < DIAS_SEMANA; v++) {
+                        consumoLitros[i][v] = 0.5;
+                    }
+                }
+
+                guardarDatos(nombre, personas, limiteDiario, consumoLitros);
 
                 break;
             }
@@ -234,7 +246,39 @@ void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
 
 }
 
-// CREAR FUNCION GUARDAR DATOS
+void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
+
+    datos = fopen(nombre_datos, "w");
+
+    fprintf(datos, "%d\n", cantidadDatos);
+
+    for(int i = 0; i < cantidadDatos; i++) {
+        fprintf(datos, "%s %d %f\n", nombre[i], personas[i], limiteDiario[i]);
+    }
+
+    for(int i = 0; i < cantidadDatos; i++){
+        
+        for(int v = 0; v < DIAS_SEMANA; v++) {
+            if (v < DIAS_SEMANA - 1) {
+
+                fprintf(datos, "%f ", consumoLitros[i][v]);
+
+            } else if (i != cantidadDatos - 1 && v == DIAS_SEMANA - 1) {
+
+                fprintf(datos, "%f\n", consumoLitros[i][v]);
+
+            } else if (i == cantidadDatos - 1 && v == DIAS_SEMANA - 1) {
+                
+                fprintf(datos, "%f", consumoLitros[i][v]); 
+            
+            }
+        }
+
+    }
+
+    fclose(datos);
+
+}
 
 // ========= J U A N J O S E ========= //
 
@@ -376,3 +420,4 @@ int obtener_datos() {
 void aumentar_cantidad_datos() {
     cantidadDatos += 1;
 }
+

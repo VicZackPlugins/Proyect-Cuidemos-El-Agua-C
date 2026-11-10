@@ -33,6 +33,7 @@ int Buscar_Hogar(char nombre_hogar[32]);
 
 int obtener_datos();
 void aumentar_cantidad_datos();
+void ods_info();
 
 int main() {
     
@@ -371,6 +372,19 @@ int obtener_datos() {
     fclose (datos);
 
     return cantidad_datos;
+}
+
+void ods_info(){
+printf("=====ODS 6: Agua Limpia y Saneamiento=====\n");
+printf("\n");
+printf("Mas de medio millon de personas no acceso a agua potable segura\n");
+printf("a su ves el problema del saneamiento en las casas como retretes en\n");
+printf("malas condiciones a su vez con las aguas residuales  que generamos son\n");
+printf("el causante de degradar el ecosistema y el mayor problema un grave deficit\n"); 
+printf("de financiamiento y gestion ineficiente de las cuencas y redes hidricas\n");
+printf("con brechas muy marcadas entre las zonas urbanas y rurales\n");
+printf("\n");
+printf("Ayuda a garantizar la disponibilidad y la gestion sostenible del agua y los servicios de saneamiento para todas las personas\n");
 }
 
 void aumentar_cantidad_datos() {

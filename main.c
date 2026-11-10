@@ -2,6 +2,48 @@
 #include <string.h>
 #include <stdlib.h>
 
+/*
+====== PROGRESO ACTUAL =======
+
+    === JUAN JOSEXO === :
+
+        QUE ESTA HECHO:
+
+            >> Configurar Elementos         -- se supone que isto, faltan arreglos
+            >> Buscar_Hogar                 -- se supone que isto, faltan arreglos
+
+        QUE FALTA POR HACER:
+
+    === VISHO === :
+
+        QUE ESTA HECHO:
+
+            >>
+            >> 
+
+        QUE FALTA POR HACER:
+
+            >>
+            >> 
+
+
+    === ELIAS === : 
+
+        QUE ESTA HECHO:
+
+            >> 
+            >>
+
+        QUE FALTA POR HACER:
+
+            >>
+            >> 
+
+*/
+
+
+
+
 // ======= CONFIGURACION: ======== //
 
 #define DIAS_SEMANA 7
@@ -32,7 +74,8 @@ void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
 int Buscar_Hogar(char nombre_hogar[32]);
 
 int obtener_datos();
-void aumentar_cantidad_datos();
+int aumentar_cantidad_datos();
+void ods_info();
 
 int main() {
     
@@ -282,11 +325,6 @@ void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float lim
 
 // ========= J U A N J O S E ========= //
 
-/*          >> Configurar Elementos
-            >> Buscar_Hogar
-            >> 
-*/ 
-
 int Buscar_Hogar(char nombre_hogar[32])
 {
     datos = fopen(nombre_datos, "r"); // abrimos el archivo con los datos en forma "read"
@@ -301,14 +339,14 @@ int Buscar_Hogar(char nombre_hogar[32])
     int personas_temp;
     float Consumo_Litros_Temp;
 
-    for (int i=0; i< (cantidad_datos+1); i++) 
+    for (int i=-1; i< (cantidad_datos); i++) 
 
     //// Sumamos +1 a cantidad de datos para
     //// poder leer las lineas necesarias, ya que si no lo hacemos, se leera una linea menos 
     //// de la que nos interesa
 
     {
-        if(i==0)
+        if(i==-1)
         {
             continue; /// ignoramos la primera linea
         }
@@ -330,12 +368,12 @@ int Buscar_Hogar(char nombre_hogar[32])
             //// cerramos el archivo en el que se almacenan los datos
             /// para evitar errores
 
-            return 1;
+            return i;
         }
     }
 
     fclose(datos);
-    return 0;
+    return -1;
 
     //// cerramos el archivo en el que se almacenan los datos
     /// para evitar errores
@@ -345,21 +383,38 @@ int Buscar_Hogar(char nombre_hogar[32])
 void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) 
 {
     //// inicializamos los elementos para que tengan un valor 
-    
-    int cantidad_datos = 0;
+
+    char temp_nombre_hogar[32];
+
 
     printf("========= Configuracion =========\n");
 
     printf("Ingresa que dato quieres configurar\n");
+    int resultado_busqueda;
+    do
+    {
+        printf("Nombre del hogar\n >> "); //// Nombre del hogar a evaluar
+        scanf("%s", temp_nombre_hogar); //// escaneamos la temporal para comparar caracteres
+        resultado_busqueda = Buscar_Hogar(temp_nombre_hogar);   /// si el resultado de busqueda no coincide con el nombre de un hogar existente
+                                                                /// volvemos a preguntar
+        if (resultado_busqueda != -1)
+        {
+            printf("TU WEA NO EXISTE");
+        }
 
-    printf("Nombre del hogar\n >> "); //// Nombre del hogar a evaluar
-    scanf("%s", nombre[cantidad_datos]);
+    }while(resultado_busqueda != -1);   /// repetir mientras no hayan resultados coincidente
+
+    int cantidad_datos = aumentar_cantidad_datos();     /// inicializamos la cantidad de datos como local para poder utilizarla
+
+    strcpy(nombre[cantidad_datos-1], temp_nombre_hogarl);   //// pasamos el valor de la funcion original a cantidad de datos
 
     printf("Cantidad Personas\n >> "); //// cantidad de personas en un hogar
     scanf("%d", personas[cantidad_datos]);
 
     printf("Limite diario maximo\n >> "); //// Limite diario maximo para este hogar
     scanf("%f", limiteDiario[cantidad_datos]);
+
+    /// los valores ingresados se traspasan a cantidad de datos para ser almacenados
 
     for(int i=0; i<DIAS_SEMANA; i++) {
         consumoLitros[cantidad_datos][i]=0;
@@ -370,31 +425,28 @@ void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float 
 {
 
     char input_usuario[32];
-    int index_hogar;
 
-    do {
+    /// establecemos la cantidad de uso diario para un hogar especifico
 
-        scanf("%s", input_usuario);
+    /// primero buscar que el hogar exista...
 
-        index_hogar = Buscar_Hogar(input_usuario);
+    char temp_nombre_hogar[32];
 
-        if (index_hogar  == 0) {
-            printf("El elemento no existe. Ingrese otro porfavor\n>> ");
+    int resultado_busqueda;
+    do
+    {
+        printf("Nombre del hogar\n >> "); //// Nombre del hogar para editar
+        scanf("%s", temp_nombre_hogar); //// ingresamos el nombre del hogar (TIENE que existir, si no, se repite la pregunta)
+        resultado_busqueda = Buscar_Hogar(temp_nombre_hogar);   /// si el resultado de busqueda no coincide con el nombre de un hogar existente
+                                                                /// volvemos a preguntar
+        if (resultado_busqueda != -1)
+        {
+            printf("TU WEA NO EXISTE");
         }
 
-    } while (index_hogar == 0);
+    }while(resultado_busqueda != -1);
 
-    // SCANF PIDIENDO EL DIA DE LA SEMANA
-    int input_dia;
-    scanf("%d", input_dia);
-    // APLICAR VERIFICACIONES ENTRE 1 a 7
-
-    // SCANF PIDIENDO EL VALOR DE ESE DIA
-    int input_valor;
-    scanf("%d", input_valor);
-    // APLICAR VERIFICACIONES HASTA 5000
-
-    consumoLitros[index_hogar][input_dia - 1] = input_valor;
+    
 }
 
 
@@ -417,7 +469,25 @@ int obtener_datos() {
     return cantidad_datos;
 }
 
+int aumentar_cantidad_datos() {
+    return cantidadDatos += 1;
+}
 void aumentar_cantidad_datos() {
     cantidadDatos += 1;
 }
+<<<<<<< HEAD
+=======
+void ods_info(){
+printf("=====ODS 6: Agua Limpia y Saneamiento=====\n");
+printf("\n");
+printf("Mas de medio millon de personas no acceso a agua potable segura\n");
+printf("a su ves el problema del saneamiento en las casas como retretes en\n");
+printf("malas condiciones a su vez con las aguas residuales  que generamos son\n");
+printf("el causante de degradar el ecosistema y el mayor problema un grave deficit\n"); 
+printf("de financiamiento y gestion ineficiente de las cuencas y redes hidricas\n");
+printf("con brechas muy marcadas entre las zonas urbanas y rurales\n");
+printf("\n");
+printf("Ayuda a garantizar la disponibilidad y la gestion sostenible del agua y los servicios de saneamiento para todas las personas\n");
+}
+>>>>>>> c8a309eb2ae73c10fbba6152159bd002e1d62c46
 

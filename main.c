@@ -373,7 +373,9 @@ int obtener_datos() {
 
     return cantidad_datos;
 }
-
+void aumentar_cantidad_datos() {
+    cantidadDatos += 1;
+}
 void ods_info(){
 printf("=====ODS 6: Agua Limpia y Saneamiento=====\n");
 printf("\n");
@@ -387,6 +389,3 @@ printf("\n");
 printf("Ayuda a garantizar la disponibilidad y la gestion sostenible del agua y los servicios de saneamiento para todas las personas\n");
 }
 
-void aumentar_cantidad_datos() {
-    cantidadDatos += 1;
-}

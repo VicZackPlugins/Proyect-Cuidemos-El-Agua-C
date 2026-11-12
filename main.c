@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*
 ====== PROGRESO ACTUAL =======
@@ -49,6 +49,10 @@
 #define DIAS_SEMANA 7
 #define MAX_DATOS 10
 
+
+#define MAX_BORDER 42 // Largo maximo de los headers
+#define CHAR_LINE '=' // Caracter que se usara como linea
+
 FILE *datos;        // Datos guardados
 
 char nombre_datos[] = "datos.txt";
@@ -63,15 +67,18 @@ int cantidadDatos = 0;
 // ========= FUNCIONES: ========== //
 
 void limpiar_pantalla();
+void esperar_exit();
 void mostrarMenu();
 void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
+void imprimir_titulo(char titulo[32]);
+void imprimir_borde();
 
 void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 
 void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
-int Buscar_Hogar(char nombre_hogar[32]);
+int Buscar_Hogar(char nombre_hogar[32], char nombre[MAX_DATOS][32]);
 
 int obtener_datos();
 int aumentar_cantidad_datos();
@@ -90,8 +97,7 @@ int main() {
     iniciarArreglos(nombre, personas, limiteDiario, consumoLitros);
     cantidadDatos = obtener_datos();
 
-    int opciones;                                // Ingreso de una opcion
-    
+    int opciones;                             // Ingreso de una opcion
     limpiar_pantalla();
     
     cargarDatosArchivos(nombre, personas, limiteDiario, consumoLitros);
@@ -99,17 +105,8 @@ int main() {
         
         mostrarMenu();
         
-        int s_op;                                // Variable para el scanf de opciones
-
-        while ((s_op = scanf("%d", &opciones)) != 1) {
-            
-            limpiar_pantalla();
-            printf("[ERROR] Debe ingresar una opcion valida.\n");
-
-            while (getchar() != '\n');
-            
-            mostrarMenu();
-        }
+        scanf("%d", &opciones);
+        fflush(stdin);
         
         switch(opciones) {
             
@@ -122,6 +119,8 @@ int main() {
                 // ¿Que ODS aborda este programa?
                 limpiar_pantalla();
                 
+                ods_info();
+
                 break;
             }
             case 2: {
@@ -210,20 +209,43 @@ int main() {
 
 // ========== V I C E N T E ========== //
 
-void limpiar_pantalla() 
-{
+void limpiar_pantalla() {
+    // FUNCION PARA LIMPIAR LA PANTALLA
+
     system("cls");
 }
 
-void mostrarMenu() 
-{
-    printf("\n==========================================\n");
-    printf("   CUIDEMOS EL AGUA - ODS N 6\n");
-    printf("==========================================\n");
-    printf(" 1. ¿Que ODS aborda este programa? \n 2. Configurar elementos \n 3. Registrar datos \n 4. Modificar un dato\n");
+void esperar_exit() {
+    // FUNCION PARA ESPERAR QUE EL USUARIO VUELVA AL MENU ANTERIOR
+    /*
+        No hay restricciones, puesto que no buscamos verdaderamente
+        una entrada en especifico, simplemente queremos que el
+        programa se frene para que los datos en pantalla queden pegados.
+        Un ejemplo para el uso de esta funcion es en la opcion "Ver tabla de datos".
+    */
+
+    imprimir_borde();
+    printf("\nPresione la tecla ENTER para volver... \n");
+
+    /*
+        Con fgets() podemos leer el teclado y detectar cualquier caracter
+        incluyendo el ENTER, debido a que fgets() lee una linea hasta que
+        detecta un salto de linea "\n" y exactamente la tecla ENTER
+        equivale a un salto de linea en los caracteres.
+    */
+
+    char temp[128];
+    fgets(temp, sizeof(temp), stdin);
+    limpiar_pantalla();
+
+}
+
+void mostrarMenu() {
+    imprimir_titulo("CUIDEMOS EL AGUA - ODS N 6");
+    printf("\n 1. ¿Que ODS aborda este programa? \n 2. Configurar elementos \n 3. Registrar datos \n 4. Modificar un dato\n");
     printf(" 5. [Operacion principal del proyecto] \n 6. Ver tabla de datos \n 7. Ver estadisticas \n 8. Guardar datos\n");
-    printf(" 9. Ayuda y Acerca de \n 0. Salir \n");
-    printf("==========================================\n");
+    printf(" 9. Ayuda y Acerca de \n 0. Salir \n\n");
+    imprimir_borde();
     printf("Elija una opcion: ");
 }
 
@@ -295,13 +317,13 @@ void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float lim
 
     fprintf(datos, "%d\n", cantidadDatos);
 
-    for(int i = 0; i < cantidadDatos; i++) {
+    for (int i = 0; i < cantidadDatos; i++) {
         fprintf(datos, "%s %d %f\n", nombre[i], personas[i], limiteDiario[i]);
     }
 
-    for(int i = 0; i < cantidadDatos; i++){
+    for (int i = 0; i < cantidadDatos; i++){
         
-        for(int v = 0; v < DIAS_SEMANA; v++) {
+        for (int v = 0; v < DIAS_SEMANA; v++) {
             if (v < DIAS_SEMANA - 1) {
 
                 fprintf(datos, "%f ", consumoLitros[i][v]);
@@ -323,60 +345,76 @@ void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float lim
 
 }
 
-// ========= J U A N J O S E ========= //
-
-int Buscar_Hogar(char nombre_hogar[32])
+void imprimir_titulo(char titulo[64])
 {
-    datos = fopen(nombre_datos, "r"); // abrimos el archivo con los datos en forma "read"
 
-    int cantidad_datos = obtener_datos(); /// llamamos a la funcion obtener datos para
-    // obtener la cantidad de los datos disponibles
-    /// Creamos archivos temporales que nos serviran para 
-    /// identificar el hogar que estamos buscando segun
-    /// sus valores
+    int pos_texto = ((int)(MAX_BORDER / 2)) - ((int)(strlen(titulo) / 2));
 
-    char nombre_temp[32];
-    int personas_temp;
-    float Consumo_Litros_Temp;
+    for (int i = 0; i < 3; i++) {
+        
+        for (int v = 0; v < MAX_BORDER; v++) {
+            if (i == 1) {
+                if (v < pos_texto) {
+                    printf(" ");
+                    continue;
+                }
+                else if (v == pos_texto) {
+                    printf("%s", titulo);
+                    break;
+                }
+            }
 
-    for (int i=-1; i< (cantidad_datos); i++) 
-
-    //// Sumamos +1 a cantidad de datos para
-    //// poder leer las lineas necesarias, ya que si no lo hacemos, se leera una linea menos 
-    //// de la que nos interesa
-
-    {
-        if(i==-1)
-        {
-            continue; /// ignoramos la primera linea
+            printf("%c", CHAR_LINE);
         }
 
-        fscanf(datos, "%s %d %f", nombre_temp, personas_temp, Consumo_Litros_Temp);
+        printf("\n");
+    }
 
-        /// leemos los datos con los valores de las variables temporales para verificar
-        /// si los elementos almacenados coinciden, es decir, que existan dentro de los
-        /// datos almacenados con los mismos nombres de las variables temporales
+}
 
-        if(nombre_hogar == nombre_temp) 
+void imprimir_subtitulo(char subtitulo[64]) {
+    
+    int pos_texto = ((int)(MAX_BORDER / 2)) - ((int)(strlen(subtitulo) / 2));
 
-        /// si el nombre del hogar coincide con el temporal
-        /// significa que existe
+    for (int i = 0; i < MAX_BORDER; i++) {
+        if (i < pos_texto) {
+            printf(" ");
+            continue;
+        }
+        else if (i == pos_texto) {
+            printf("%s", subtitulo);
+            break;
+        }
 
+        printf("%c", CHAR_LINE);
+    }
+
+    printf("\n");
+
+}
+
+void imprimir_borde() {
+    for (int i = 0; i < MAX_BORDER; i++) {
+        printf("%c", CHAR_LINE);
+    }
+
+    printf("\n");
+}
+
+// ========= J U A N J O S E ========= //
+
+int Buscar_Hogar(char nombre_hogar[32], char nombre[MAX_DATOS][32])
+{
+
+    for (int i=0; i< cantidadDatos; i++) 
+    {
+        if(strcmp(nombre_hogar, nombre[i]) == 0) 
         {
-            fclose(datos); 
-
-            //// cerramos el archivo en el que se almacenan los datos
-            /// para evitar errores
-
             return i;
         }
     }
 
-    fclose(datos);
     return -1;
-
-    //// cerramos el archivo en el que se almacenan los datos
-    /// para evitar errores
     
 }
 
@@ -385,40 +423,53 @@ void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
     //// inicializamos los elementos para que tengan un valor 
 
     char temp_nombre_hogar[32];
+    int temp_cantidad_personas;
+    float temp_lim_diario;
 
+    imprimir_titulo("CONFIGURAR ELEMENTO");
+    imprimir_subtitulo("Ingrese los datos solicitados");
+    printf("\n");
 
-    printf("========= Configuracion =========\n");
-
-    printf("Ingresa que dato quieres configurar\n");
+    //// Leer datos y responder ante restricciones
     int resultado_busqueda;
     do
     {
-        printf("Nombre del hogar\n >> "); //// Nombre del hogar a evaluar
+        printf("| Nombre del hogar: \n| >> "); //// Nombre del hogar a evaluar
         scanf("%s", temp_nombre_hogar); //// escaneamos la temporal para comparar caracteres
-        resultado_busqueda = Buscar_Hogar(temp_nombre_hogar);   /// si el resultado de busqueda no coincide con el nombre de un hogar existente
+        fflush(stdin);
+        resultado_busqueda = Buscar_Hogar(temp_nombre_hogar, nombre);   /// si el resultado de busqueda no coincide con el nombre de un hogar existente
                                                                 /// volvemos a preguntar
         if (resultado_busqueda != -1)
         {
-            printf("TU WEA NO EXISTE");
+            limpiar_pantalla();
+            printf("[ERROR] Ya existe un elemento con este nombre.\n");
+            printf("        Por favor ingrese los datos nuevamente.\n\n");
+            imprimir_titulo("CONFIGURAR ELEMENTO");
+            imprimir_subtitulo("Ingrese los datos solicitados");
+            printf("\n");
         }
 
     }while(resultado_busqueda != -1);   /// repetir mientras no hayan resultados coincidente
 
+    printf("\n| Cantidad Personas \n| >> "); //// cantidad de personas en un hogar
+    scanf("%d", &temp_cantidad_personas);
+
+    printf("\n| Limite diario maximo\n| >> "); //// Limite diario maximo para este hogar
+    scanf("%f", &temp_lim_diario);
+
     int cantidad_datos = aumentar_cantidad_datos();     /// inicializamos la cantidad de datos como local para poder utilizarla
+    int indice = cantidad_datos - 1;
 
-    strcpy(nombre[cantidad_datos-1], temp_nombre_hogarl);   //// pasamos el valor de la funcion original a cantidad de datos
-
-    printf("Cantidad Personas\n >> "); //// cantidad de personas en un hogar
-    scanf("%d", personas[cantidad_datos]);
-
-    printf("Limite diario maximo\n >> "); //// Limite diario maximo para este hogar
-    scanf("%f", limiteDiario[cantidad_datos]);
+    strcpy(nombre[indice], temp_nombre_hogar);   //// pasamos el valor de la funcion original a cantidad de datos
+    personas[indice] = temp_cantidad_personas;
+    limiteDiario[indice] = temp_lim_diario;
 
     /// los valores ingresados se traspasan a cantidad de datos para ser almacenados
-
     for(int i=0; i<DIAS_SEMANA; i++) {
-        consumoLitros[cantidad_datos][i]=0;
-    } 
+        consumoLitros[cantidad_datos - 1][i]=0;
+    }
+
+    guardarDatos(nombre, personas, limiteDiario, consumoLitros);
 }
 
 void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA])
@@ -437,7 +488,7 @@ void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float 
     {
         printf("Nombre del hogar\n >> "); //// Nombre del hogar para editar
         scanf("%s", temp_nombre_hogar); //// ingresamos el nombre del hogar (TIENE que existir, si no, se repite la pregunta)
-        resultado_busqueda = Buscar_Hogar(temp_nombre_hogar);   /// si el resultado de busqueda no coincide con el nombre de un hogar existente
+        resultado_busqueda = Buscar_Hogar(temp_nombre_hogar, nombre);   /// si el resultado de busqueda no coincide con el nombre de un hogar existente
                                                                 /// volvemos a preguntar
         if (resultado_busqueda != -1)
         {
@@ -448,8 +499,6 @@ void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float 
 
     
 }
-
-
 
 // ============ E L I A S ============ //
 
@@ -472,22 +521,19 @@ int obtener_datos() {
 int aumentar_cantidad_datos() {
     return cantidadDatos += 1;
 }
-void aumentar_cantidad_datos() {
-    cantidadDatos += 1;
-}
-<<<<<<< HEAD
-=======
-void ods_info(){
-printf("=====ODS 6: Agua Limpia y Saneamiento=====\n");
-printf("\n");
-printf("Mas de medio millon de personas no acceso a agua potable segura\n");
-printf("a su ves el problema del saneamiento en las casas como retretes en\n");
-printf("malas condiciones a su vez con las aguas residuales  que generamos son\n");
-printf("el causante de degradar el ecosistema y el mayor problema un grave deficit\n"); 
-printf("de financiamiento y gestion ineficiente de las cuencas y redes hidricas\n");
-printf("con brechas muy marcadas entre las zonas urbanas y rurales\n");
-printf("\n");
-printf("Ayuda a garantizar la disponibilidad y la gestion sostenible del agua y los servicios de saneamiento para todas las personas\n");
-}
->>>>>>> c8a309eb2ae73c10fbba6152159bd002e1d62c46
 
+void ods_info() {
+    imprimir_titulo("ODS 6: Agua Limpia y Saneamiento");
+    printf("\n");
+    printf("Mas de medio millon de personas no acceso a agua potable segura\n");
+    printf("a su ves el problema del saneamiento en las casas como retretes en\n");
+    printf("malas condiciones a su vez con las aguas residuales  que generamos son\n");
+    printf("el causante de degradar el ecosistema y el mayor problema un grave deficit\n"); 
+    printf("de financiamiento y gestion ineficiente de las cuencas y redes hidricas\n");
+    printf("con brechas muy marcadas entre las zonas urbanas y rurales\n");
+    printf("\n");
+    printf("Ayuda a garantizar la disponibilidad y la gestion sostenible del agua \ny los servicios de saneamiento para todas las personas\n\n");
+
+    esperar_exit();
+
+}

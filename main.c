@@ -83,6 +83,7 @@ int Buscar_Hogar(char nombre_hogar[32], char nombre[MAX_DATOS][32]);
 int obtener_datos();
 int aumentar_cantidad_datos();
 void ods_info();
+void ver_tabla(float consumo_litros[MAX_DATOS][DIAS_SEMANA]);
 
 int main() {
     
@@ -152,7 +153,7 @@ int main() {
             case 6: {
                 // Ver tabla de datos
                 limpiar_pantalla();
-
+                ver_tabla(consumoLitros);
                 break;
             }
             case 7: {
@@ -525,15 +526,26 @@ int aumentar_cantidad_datos() {
 void ods_info() {
     imprimir_titulo("ODS 6: Agua Limpia y Saneamiento");
     printf("\n");
-    printf("Mas de medio millon de personas no acceso a agua potable segura\n");
-    printf("a su ves el problema del saneamiento en las casas como retretes en\n");
-    printf("malas condiciones a su vez con las aguas residuales  que generamos son\n");
-    printf("el causante de degradar el ecosistema y el mayor problema un grave deficit\n"); 
-    printf("de financiamiento y gestion ineficiente de las cuencas y redes hidricas\n");
-    printf("con brechas muy marcadas entre las zonas urbanas y rurales\n");
+    printf("Mas de medio millon de personas no tiene acceso a agua  potable\n");
+    printf("segura a su ves el  problema del saneamiento, malas condiciones\n");
+    printf("tambien aguas residuales; que se generan en casa en  los  baños\n");
+    printf("es el causante de degradar el ecosistema y  el  mayor  problema\n");  
+    printf("un grave deficit de financiamiento, como una  mala  gestion  de\n"); 
+    printf("las redes hidricas en zonas rurales\n");
     printf("\n");
     printf("Ayuda a garantizar la disponibilidad y la gestion sostenible del agua \ny los servicios de saneamiento para todas las personas\n\n");
 
     esperar_exit();
 
+}
+void ver_tabla(float consumo_litros[MAX_DATOS][DIAS_SEMANA]){
+    for (int i = 0; i < cantidadDatos; i++)
+    {
+        for (int j = 0; j < DIAS_SEMANA; j++)
+        {
+            printf("%.2f ",consumo_litros[i][j]);
+        }
+        printf("\n");
+    }
+    esperar_exit();
 }

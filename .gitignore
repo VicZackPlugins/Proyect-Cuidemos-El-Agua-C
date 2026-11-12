@@ -5,6 +5,6 @@
 !*/
 
 # 3. Excepciones: Mantener solo archivos .c, .md y el propio .gitignore
-!*.c
+!main.c
 !*.md
 !.gitignore

@@ -72,13 +72,15 @@ void mostrarMenu();
 void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
-void imprimir_titulo(char titulo[32]);
+void imprimir_titulo(char titulo[64]);
 void imprimir_borde();
 
 void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 
 void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 int Buscar_Hogar(char nombre_hogar[32], char nombre[MAX_DATOS][32]);
+
+void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 
 int obtener_datos();
 int aumentar_cantidad_datos();
@@ -134,7 +136,7 @@ int main() {
             }
             case 3: {
                 // Registrar datos
-                limpiar_pantalla();
+                Registrar_Datos(nombre, personas, limiteDiario, consumoLitros);
 
                 break;
             }
@@ -471,6 +473,9 @@ void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
     }
 
     guardarDatos(nombre, personas, limiteDiario, consumoLitros);
+
+    printf("[AVISO] Datos guardados con exito para el hogar %d\n", temp_nombre_hogar);
+    limpiar_pantalla();
 }
 
 void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA])
@@ -478,25 +483,49 @@ void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float 
 
     char input_usuario[32];
 
-    /// establecemos la cantidad de uso diario para un hogar especifico
-
-    /// primero buscar que el hogar exista...
-
     char temp_nombre_hogar[32];
 
+    int cantidad_datos = aumentar_cantidad_datos();     /// inicializamos la cantidad de datos como local para poder utilizarla
+    int indice = cantidad_datos - 1;
+
     int resultado_busqueda;
+
+    imprimir_titulo("REGISTRAR DATOS");
+    imprimir_subtitulo("Configura el limite diario para");
+    imprimir_subtitulo("un hogar seleccioando");
+    printf("\n");
+
     do
     {
         printf("Nombre del hogar\n >> "); //// Nombre del hogar para editar
         scanf("%s", temp_nombre_hogar); //// ingresamos el nombre del hogar (TIENE que existir, si no, se repite la pregunta)
         resultado_busqueda = Buscar_Hogar(temp_nombre_hogar, nombre);   /// si el resultado de busqueda no coincide con el nombre de un hogar existente
                                                                 /// volvemos a preguntar
-        if (resultado_busqueda != -1)
+        if (resultado_busqueda == -1)
         {
-            printf("TU WEA NO EXISTE");
+            printf("[ERROR] Hogar de nombre [ %s ] no encontrado\n", temp_nombre_hogar);
+            printf("Porfavor utilize un nombre relacionado con un hogar existente\n"); 
+            printf("\n");
+        }
+        else if(resultado_busqueda != -1)
+        {
+
+            printf("[AVISO] Hogar existente encontrado\n");
+            printf("Nombre: %s\n", temp_nombre_hogar);
+
         }
 
-    }while(resultado_busqueda != -1);
+    }while(resultado_busqueda == -1);
+
+    if(resultado_busqueda != -1)
+    {
+        imprimir_titulo("Configuracion ");
+        printf("\n >> ");
+        scanf("%d", consumoLitros[cantidad_datos - 1][indice]);
+        printf("cantidad de datos establecida");
+        
+    }
+
 
     
 }

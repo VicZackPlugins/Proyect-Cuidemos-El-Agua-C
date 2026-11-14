@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 
 /*
 ====== PROGRESO ACTUAL =======
@@ -72,7 +73,8 @@ void mostrarMenu();
 void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
-void imprimir_titulo(char titulo[32]);
+void imprimir_titulo(char titulo[64]);
+void subtitulo(char subtitulo[64]);
 void imprimir_borde();
 
 void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
@@ -83,9 +85,11 @@ int Buscar_Hogar(char nombre_hogar[32], char nombre[MAX_DATOS][32]);
 int obtener_datos();
 int aumentar_cantidad_datos();
 void ods_info();
-void ver_tabla(float consumo_litros[MAX_DATOS][DIAS_SEMANA]);
+void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_SEMANA]);
 
 int main() {
+
+    SetConsoleOutputCP(65001);
     
     char nombre[MAX_DATOS][32];                  // Nombre de los hogares
 
@@ -153,7 +157,7 @@ int main() {
             case 6: {
                 // Ver tabla de datos
                 limpiar_pantalla();
-                ver_tabla(consumoLitros);
+                ver_tabla(nombre, consumoLitros);
                 break;
             }
             case 7: {
@@ -165,6 +169,9 @@ int main() {
             case 8: {
                 // Guardar datos
                 limpiar_pantalla();
+
+                guardarDatos(nombre, personas, limiteDiario, consumoLitros);
+                printf("[AVISO] Datos guardados de manera satisfactoria.\n");
 
                 break;
             }
@@ -226,7 +233,7 @@ void esperar_exit() {
     */
 
     imprimir_borde();
-    printf("\nPresione la tecla ENTER para volver... \n");
+    printf("\nPresione la tecla ENTER para volver... \n\n");
 
     /*
         Con fgets() podemos leer el teclado y detectar cualquier caracter
@@ -298,7 +305,15 @@ void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
 
         if (linea > (cantidadDatos + 1)) {
             for (int i = 0; i < DIAS_SEMANA; i++) {
-                sscanf(buffer, "%f", &consumoLitros[index][i]);
+                sscanf(buffer, "%f %f %f %f %f %f %f", 
+                    &consumoLitros[index][0], 
+                    &consumoLitros[index][1], 
+                    &consumoLitros[index][2], 
+                    &consumoLitros[index][3], 
+                    &consumoLitros[index][4],
+                    &consumoLitros[index][5],
+                    &consumoLitros[index][6]
+                );
             }
             
             index++;
@@ -538,14 +553,52 @@ void ods_info() {
     esperar_exit();
 
 }
-void ver_tabla(float consumo_litros[MAX_DATOS][DIAS_SEMANA]){
+
+void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_SEMANA]){
+
+    int total_fila = 0,
+        maxNameLen = 0;
+
+
+    for (int i = 0; i < cantidadDatos; i++) {
+        
+        if (strlen(nombre[i]) > maxNameLen) {
+            maxNameLen = strlen(nombre[i]);
+        }
+
+    }
+
+    imprimir_titulo("TABLA DIAS ");
+    printf("\n");
+
+    for (int i = 0; i < (maxNameLen + 3); i++) {
+        printf(" ");
+    }
+
+    printf("[DIA 1] [DIA 2] [DIA 3] [DIA 4] [DIA 5] [DIA 6] [DIA 7] [TOTAL]\n\n");
+
     for (int i = 0; i < cantidadDatos; i++)
     {
+        
+        printf("[%s] ", nombre[i]);
+        
+        for (int f = 0; f < (maxNameLen - strlen(nombre[i])); f++) {
+            printf(" ");
+        }
+        
+        
         for (int j = 0; j < DIAS_SEMANA; j++)
         {
-            printf("%.2f ",consumo_litros[i][j]);
+            if ((j+1) % 2 != 0) printf("| ");
+
+            printf("%.2f ", consumo_litros[i][j]);
+
+            if ((j+1) % 2 != 0) printf("| ");
         }
         printf("\n");
     }
+
+    printf("\n");
+
     esperar_exit();
 }

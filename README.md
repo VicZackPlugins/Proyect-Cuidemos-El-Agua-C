@@ -50,16 +50,16 @@ Usa constantes al inicio del programa para que sea fácil cambiarlas:
 ========================================
     NOMBRE DEL PROGRAMA - ODS N°
 ========================================
-1. ¿Qué ODS aborda este programa?
-2. Configurar elementos
-3. Registrar datos
-4. Modificar un dato
-5. [Operación principal del proyecto]
-6. Ver tabla de datos
-7. Ver estadísticas
-8. Guardar datos
-9. Ayuda y Acerca de
-0. Salir
+1. ¿Qué ODS aborda este programa? LISTO
+2. Configurar elementos LISTO
+3. Registrar datos LISTO
+4. Modificar un dato FALTA
+5. [Operación principal del proyecto] FALTA
+6. Ver tabla de datos LISTO
+7. Ver estadísticas FALTA
+8. Guardar datos LISTO
+9. Ayuda y Acerca de FALTA
+0. Salir LISTO
 ========================================
 Elija una opción:
 ```

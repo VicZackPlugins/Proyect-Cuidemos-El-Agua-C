@@ -49,6 +49,7 @@
 
 #define DIAS_SEMANA 7
 #define MAX_DATOS 10
+#define LIM_LITRO 5000
 
 
 #define MAX_BORDER 42 // Largo maximo de los headers
@@ -140,8 +141,10 @@ int main() {
             }
             case 3: {
                 // Registrar datos
-                Registrar_Datos(nombre, personas, limiteDiario, consumoLitros);
+                limpiar_pantalla();
 
+                Registrar_Datos(nombre, personas, limiteDiario, consumoLitros);
+                
                 break;
             }
             case 4: {
@@ -496,14 +499,10 @@ void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
 void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA])
 {
 
-    char input_usuario[32];
-
     char temp_nombre_hogar[32];
-
-    int cantidad_datos = aumentar_cantidad_datos();     /// inicializamos la cantidad de datos como local para poder utilizarla
-    int indice = cantidad_datos - 1;
-
     int resultado_busqueda;
+    int dia_eleccion;
+    int consumo_seleccion;
 
     imprimir_titulo("REGISTRAR DATOS");
     imprimir_subtitulo("Configura el limite diario para");
@@ -524,26 +523,74 @@ void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float 
         }
         else if(resultado_busqueda != -1)
         {
-
+            limpiar_pantalla();
+            imprimir_titulo("REGISTRAR DATOS");
+            imprimir_subtitulo("Configura el limite diario para");
+            imprimir_subtitulo("un hogar seleccioando");
+            printf("\n");
             printf("[AVISO] Hogar existente encontrado\n");
-            printf("Nombre: %s\n", temp_nombre_hogar);
+            printf("Nombre: \"%s\"\n", temp_nombre_hogar);
+            do 
+            {
+
+                printf("\nIngresa el dia de la semana que deseas configurar (de 1 hasta %d)\n", DIAS_SEMANA);
+                printf("\n >> ");
+                scanf("%d", &dia_eleccion);
+                if(consumoLitros[resultado_busqueda][dia_eleccion]!=0)
+                {
+                    printf("\n");
+                    printf("[ERROR] Este dia ya tiene un limite establecido (limite en el dia %d: %d)\n", dia_eleccion, consumoLitros[resultado_busqueda][dia_eleccion]);  
+                }
+                else if(dia_eleccion>DIAS_SEMANA || dia_eleccion<1)
+                {
+                    printf("\n");
+                    printf("[ERROR] Valor fuera de rango, porfavor inserta un valor entre 0 y %d.\n", DIAS_SEMANA);  
+                }
+
+            }while(dia_eleccion>DIAS_SEMANA || dia_eleccion<1);
+            do
+            {
+                printf("\nIngresa el consumo diario para este hogar en el dia %d (limite maximo: %d)", dia_eleccion, LIM_LITRO);
+                printf("\n >> ");
+                scanf("%d", &consumo_seleccion);
+                if (consumo_seleccion>LIM_LITRO)
+                {
+                    printf("\n");
+                    printf("[ERROR] Valor fuera de rango, porfavor inserta un valor entre 0 y %d.\n", LIM_LITRO);  
+                }
+            }while(consumo_seleccion>LIM_LITRO);
+            consumoLitros[resultado_busqueda][dia_eleccion]= consumo_seleccion;
+            limpiar_pantalla();
+            printf("[AVISO] Limite establecido a: %d  para el dia %d\n", consumo_seleccion, dia_eleccion);
+            printf("[AVISO] Datos para el hogar: \"%s\" guardados con exito\n", temp_nombre_hogar);
+            printf("D E B U G: Limite actual para hogar  \"%s\" en el dia %d es %f", temp_nombre_hogar, dia_eleccion, consumoLitros[resultado_busqueda][dia_eleccion]);
+            consumo_seleccion=0;
+            dia_eleccion=0;
+            guardarDatos(nombre, personas, limiteDiario, consumoLitros);
+            printf("\n" );
 
         }
 
     }while(resultado_busqueda == -1);
-
-    if(resultado_busqueda != -1)
-    {
-        imprimir_titulo("Configuracion ");
-        printf("\n >> ");
-        scanf("%d", consumoLitros[cantidad_datos - 1][indice]);
-        printf("cantidad de datos establecida");
-        
-    }
-
-
     
 }
+
+void Modificar_Un_Dato(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA])
+{
+
+    char temp_nombre_hogar[32];
+    int resultado_busqueda;
+    int dia_eleccion;
+    int consumo_seleccion;
+
+    imprimir_titulo("MODIFICAR UN DATO");
+    imprimir_subtitulo("Modifica un dato ya establecido para un hogar");
+    imprimir_subtitulo("un hogar seleccioando");
+    printf("\n");
+    
+}
+
+
 
 // ============ E L I A S ============ //
 

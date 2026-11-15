@@ -43,43 +43,60 @@
 
 */
 
+/* ===============================
+
+          CONFIGURACIONES
+                Y
+        VARIABLES GLOBALES
+
+=============================== */
+
+#define DIAS_SEMANA 7               // COLUMNAS MAXIMAS DE LA MATRIZ
+                                    // EN CASO DE MODIFICAR EL VALOR SE DEBE
+                                    // MODIFICAR LA FUNCION cargarDatosArchivos()
+                                    // Y SUS VALORES DE consumoLitros
+
+#define MAX_DATOS 10                // VALOR MAXIMOS DE DATOS A GUARDAR EN LOS ARREGLOS
+#define LIM_LITRO 5000              // LIMITE DE LITROS A GUARDAR EN LOS ARCHIVOS
 
 
+#define MAX_BORDER 42               // LARGO MAXIMOS DE LOS BORDES DE TITULOS
+#define CHAR_LINE '='               // CARACTER QUE SE USARA COMO BORDE DE TITULOS
 
-// ======= CONFIGURACION: ======== //
+#define CHAR_TABLE "─"              // CARACTER QUE SE USARA COMO LINEA HORIZONTAL 
+                                    // DE LA TABLA DE DATOS
 
-#define DIAS_SEMANA 7
-#define MAX_DATOS 10
-#define LIM_LITRO 5000
+#define CHAR_SPACE ' '              // CARACTER QUE SE USARA COMO ESPACIO
 
+FILE *datos;                        // REFERENCIA TIPO PUNTERO AL ARCHIVO QUE SE 
+                                    // USARA PARA ALMACENAR LOS DATOS
 
-#define MAX_BORDER 42 // Largo maximo de los headers
-#define CHAR_LINE '=' // Caracter que se usara como linea
+char nombre_datos[] = "datos.txt";  // NOMBRE DEL ARCHIVO DONDE SE GUARDARAN LOS DATOS
 
-FILE *datos;          // Datos guardados
+// MODOS DE APERTURA DEL ARCHIVO DE DATOS:
 
-char nombre_datos[] = "datos.txt";
-
-// datos = fopen("db.txt", r); READ
-// datos = fopen("db.txt", w); WRITTE
-// datos = fopen("db.txt", a); APPEND
+// datos = fopen("datos.txt", r); READ
+// datos = fopen("datos.txt", w); WRITTE
+// datos = fopen("datos.txt", a); APPEND
 // fclose(file)
 
-int cantidadDatos = 0;
+int cantidadDatos = 0;              // CANTIDAD DE DATOS REGISTRADOS
 
-// ========= FUNCIONES: ========== //
+/* ===============================
 
-void limpiar_pantalla();
-void esperar_exit();
+            FUNCIONES
+
+=============================== */
+
+void imprimirTitulo(char titulo[64]);
+void imprimirSubtitulo(char subtitulo[64]);
+void imprimirBorde();
+void limpiarPantalla();
+void volverAlMenu();
 void mostrarMenu();
 void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
-void imprimir_titulo(char titulo[64]);
-void subtitulo(char subtitulo[64]);
-void imprimir_borde();
-
-void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 
 void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 int Buscar_Hogar(char nombre_hogar[32], char nombre[MAX_DATOS][32]);
@@ -89,95 +106,146 @@ void Modificar_Un_Dato(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], floa
 
 int obtener_datos();
 int aumentar_cantidad_datos();
+void imprimir_espacios(int cantidad, int tipo);
 void ods_info();
 void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_SEMANA]);
-void imprimir_espacios(int cantidad, int tipo);
 void cabecera_tabla(int maxNameLen);
+
+/* ===============================
+
+           FUNCION MAIN
+
+=============================== */
 
 int main() {
 
+    // CORREGIR ERRORES DE CARACTERES RAROS EN LA CONSOLA
     SetConsoleOutputCP(65001);
     
-    char nombre[MAX_DATOS][32];                  // Nombre de los hogares
+    // VECTOR PARA LOS NOMBRES DE LOS HOGARES
+    char nombre[MAX_DATOS][32];
 
-    int personas[MAX_DATOS];                     // Cantidad de personas por hogar
+    // VECTOR PARA LA CANTIDAD DE PERSONAS POR HOGAR
+    int personas[MAX_DATOS];
 
-    float limiteDiario[MAX_DATOS],               // Promedio litros a la semana por hogar
-          consumoLitros[MAX_DATOS][DIAS_SEMANA]; // Consumo de litros por hogar por día
+    // VECTOR PARA LOS LITROS DIARIOS RECOMENDADOS POR HOGAR
+    float limiteDiario[MAX_DATOS],
+    
+    // MATRIZ QUE ALMACENA LOS LITROS CONSUMIDOS POR DIA POR HOGAR
+          consumoLitros[MAX_DATOS][DIAS_SEMANA];
 
-    // Iniciar arreglos con valores por defecto (0 o "")
+    // INICIAR LOS ARREGLOS EN 0 o "" COMO VALORES POR DEFECTO
     iniciarArreglos(nombre, personas, limiteDiario, consumoLitros);
     cantidadDatos = obtener_datos();
 
-    int opciones;                             // Ingreso de una opcion
-    limpiar_pantalla();
-    
+    // VARIABLE PARA LEER LA ENTRADA DEL USUARIO
+    int opciones;
+
+    // LIMPIAR LA PANTALLA ANTES PARA NO ACUMULAR INFORMACION
+    // Y TODO QUEDE MAS LEGIBLE
+    limpiarPantalla();
+
+    // CARGAMOS LOS DATOS DEL ARCHIVO A LOS ARREGLOS Y VARIABLES CORRESPONDIENTES
     cargarDatosArchivos(nombre, personas, limiteDiario, consumoLitros);
+
     do {
         
+        // MOSTRAR EL MENU DE OPCIONES
         mostrarMenu();
         
+        // LEER LA ENTRADA DEL USUARIO
         scanf("%d", &opciones);
+
+        // LIMPIAR EL INGRESO DE LA TECLA ENTER
         fflush(stdin);
         
         switch(opciones) {
             
             case 0: {
-                // Cerrar Programa
-                limpiar_pantalla();
+                // --------------- //
+                // CERRAR PROGRAMA //
+                // --------------- //
+
+                guardarDatos(nombre, personas, limiteDiario, consumoLitros);
+                limpiarPantalla();
+
                 return 0;
             }
             case 1: {
-                // ¿Que ODS aborda este programa?
-                limpiar_pantalla();
+                // ------------------------------ //
+                // ¿QUÉ ODS ABORDA ESTE PROGRAMA? //
+                // ------------------------------ //
                 
+                limpiarPantalla();
                 ods_info();
 
                 break;
             }
             case 2: {
-                // Configurar elementos
-                limpiar_pantalla();
-
+                // -------------------- //
+                // CONFIGURAR ELEMENTOS //
+                // -------------------- //
+                
+                limpiarPantalla();
                 ConfigurarElementos(nombre, personas, limiteDiario, consumoLitros);
 
                 break;
             }
             case 3: {
-                // Registrar datos
-                limpiar_pantalla();
-
+                // --------------- //
+                // REGISTRAR DATOS //
+                // --------------- //
+                
+                limpiarPantalla();
                 Registrar_Datos(nombre, personas, limiteDiario, consumoLitros);
                 
                 break;
             }
             case 4: {
+                // ----------------- //
+                // MODIFICAR UN DATO //
+                // ----------------- //
+
+                limpiarPantalla();
                 Modificar_Un_Dato(nombre, personas, limiteDiario, consumoLitros);
-                limpiar_pantalla();
 
                 break;
             }
             case 5: {
-                // [Operación principal del proyecto]
-                limpiar_pantalla();
+                // ------------------------ //
+                // DETECTAR EXCESOS Y FUGAS //
+                // ------------------------ //
+
+                limpiarPantalla();
 
                 break;
             }
             case 6: {
-                // Ver tabla de datos
-                limpiar_pantalla();
+                // ------------------ //
+                // VER TABLA DE DATOS //
+                // ------------------ //
+
+                limpiarPantalla();
                 ver_tabla(nombre, consumoLitros);
+                
                 break;
             }
             case 7: {
-                // Ver estadísticas
-                limpiar_pantalla();
+                // ---------------- //
+                // VER ESTADÍSTICAS //
+                // ---------------- //
+
+                limpiarPantalla();
+                estadisticas();
 
                 break;
             }
             case 8: {
-                // Guardar datos
-                limpiar_pantalla();
+                // ------------- //
+                // GUARDAR DATOS //
+                // ------------- //
+
+                limpiarPantalla();
 
                 guardarDatos(nombre, personas, limiteDiario, consumoLitros);
                 printf("[AVISO] Datos guardados de manera satisfactoria.\n");
@@ -186,13 +254,13 @@ int main() {
             }
             case 9: {
                 // Ayuda y Acerca de
-                limpiar_pantalla();
+                limpiarPantalla();
 
                 break;
             }
             case 10: {
                 // ========== T E S T ========== //
-                limpiar_pantalla();
+                limpiarPantalla();
 
                 cantidadDatos = 3;
                 
@@ -211,7 +279,7 @@ int main() {
                 break;
             }
             default: {
-                limpiar_pantalla();
+                limpiarPantalla();
                 printf("[ERROR] Debe ingresar una opcion valida.\n");
             }
 
@@ -224,15 +292,91 @@ int main() {
 
 }
 
-// ========== V I C E N T E ========== //
+/* ===============================
 
-void limpiar_pantalla() {
+            FUNCIONES
+
+=============================== */
+
+
+// ------------- //
+// V I C E N T E //
+// ------------- //
+
+
+void imprimirTitulo(char titulo[64])
+{
+
+    int pos_texto = ((int)(MAX_BORDER / 2)) - ((int)(strlen(titulo) / 2));
+
+    for (int i = 0; i < 3; i++) {
+        
+        for (int v = 0; v < MAX_BORDER; v++) {
+            if (i == 1) {
+                if (v < pos_texto) {
+                    printf(" ");
+                    continue;
+                }
+                else if (v == pos_texto) {
+                    printf("%s", titulo);
+                    break;
+                }
+            }
+
+            printf("%c", CHAR_LINE);
+        }
+
+        printf("\n");
+    }
+
+}
+
+void imprimirSubtitulo(char subtitulo[64]) {
+    
+    int pos_texto = ((int)(MAX_BORDER / 2)) - ((int)(strlen(subtitulo) / 2));
+
+    for (int i = 0; i < MAX_BORDER; i++) {
+        if (i < pos_texto) {
+            printf(" ");
+            continue;
+        }
+        else if (i == pos_texto) {
+            printf("%s", subtitulo);
+            break;
+        }
+
+        printf("%c", CHAR_LINE);
+    }
+
+    printf("\n");
+
+}
+
+void imprimirBorde() {
+    for (int i = 0; i < MAX_BORDER; i++) {
+        printf("%c", CHAR_LINE);
+    }
+
+    printf("\n");
+}
+
+void limpiarPantalla() {
     // FUNCION PARA LIMPIAR LA PANTALLA
+    /*
+        La funcion system("COMANDO") permite ejecutar un comando
+        en la terminal, en este caso para Windows el comando es: cls
+
+        ¿Por qué limpiar la pantalla?
+        R: Lo que buscamos es no obstruir el flujo del programa
+           con demasiada informacion en pantalla, debidoa  que sin esto
+           siempre la informacion anterior se queda presente, haciendo 
+           que visualmente se pierda el foco de las acciones a realizar.
+    */
 
     system("cls");
 }
 
-void esperar_exit() {
+void volverAlMenu() {
     // FUNCION PARA ESPERAR QUE EL USUARIO VUELVA AL MENU ANTERIOR
     /*
         No hay restricciones, puesto que no buscamos verdaderamente
@@ -241,32 +385,88 @@ void esperar_exit() {
         Un ejemplo para el uso de esta funcion es en la opcion "Ver tabla de datos".
     */
 
-    imprimir_borde();
+    imprimirBorde();
     printf("\nPresione la tecla ENTER para volver...    ");
 
     /*
         Con fgets() podemos leer el teclado y detectar cualquier caracter
         incluyendo el ENTER, debido a que fgets() lee una linea hasta que
         detecta un salto de linea "\n" y exactamente la tecla ENTER
-        equivale a un salto de linea en los caracteres.
+        equivale a un salto de linea en los caracteres, nos viene perfecto.
+
+        fgets() recibe como parametros un string temporal (Buffer), 
+        el tamaño del string temporal (se puede usar la funcion sizeof(ARREGLO), 
+        para obtener el valor del arreglo o buffer sin necesidad de editar ambos
+        valores) y como último parametro el archivo, o lugar de donde leera
+        los datos, en este caso para leer el teclado se utiliza: stdin.
+        
+        fgets(char [buffer], int [tamaño buffer], FILE [archivo o sdtin]);
     */
 
+    // DAR BUFFER DE UN TAMAÑO QUE NO PROVOQUE ERRORES
     char temp[128];
+
+    // USAR fgets() PARA LEER EL TECLADO
     fgets(temp, sizeof(temp), stdin);
-    limpiar_pantalla();
+    limpiarPantalla();
 
 }
 
 void mostrarMenu() {
-    imprimir_titulo("CUIDEMOS EL AGUA - ODS N 6");
-    printf("\n 1. ¿Que ODS aborda este programa? \n 2. Configurar elementos \n 3. Registrar datos \n 4. Modificar un dato\n");
-    printf(" 5. [Operacion principal del proyecto] \n 6. Ver tabla de datos \n 7. Ver estadisticas \n 8. Guardar datos\n");
+    // FUNCION PARA MOSTRAR EL MENU DE INICIO
+
+    imprimirTitulo("CUIDEMOS EL AGUA - ODS N° 6");
+    printf("\n 1. ¿Qué ODS aborda este programa? \n 2. Configurar elementos \n 3. Registrar datos \n 4. Modificar un dato\n");
+    printf(" 5. Detectar excesos y fugas \n 6. Ver tabla de datos \n 7. Ver estadísticas \n 8. Guardar datos\n");
     printf(" 9. Ayuda y Acerca de \n 0. Salir \n\n");
-    imprimir_borde();
-    printf("Elija una opcion: ");
+    imprimirBorde();
+    printf("Elija una opción: ");
+}
+
+void estadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
+
+    float consumoTotalDeHogares = 0,
+          consumoTotalHogarAnterior = 0,
+          consumoTotalHogarActual = 0,
+          consumoPromedioPersona = 0;
+
+    int indexHogarMayorConsumo = 0;
+
+    imprimirTitulo("ESTADÍSTICAS");
+
+    for (int i = 0; i < cantidadDatos; i++) {
+        
+        for (int v = 0; v < DIAS_SEMANA; v++) {
+            consumoTotalDeHogares += consumoLitros[i][v];
+            
+            consumoTotalHogarActual += consumoLitros[i][v];
+        }
+
+        if (consumoTotalHogarActual > consumoTotalHogarAnterior) {
+            indexHogarMayorConsumo = i;
+        }
+        
+        consumoTotalHogarAnterior = consumoTotalHogarActual;    
+        consumoTotalHogarActual = 0;
+
+    }
+
 }
 
 void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
+    // FUNCION PARA INICIAR LOS ARREGLOS EN 0 O EN "" COMO VALORES POR DEFECTO
+    /*
+        En este caso particular se utiliza la funcion
+        strcpy(STRING DESTINO, VALOR NUEVO), esta función es de 
+        la librería <string.h> y sirve para copiar una cadena de texto
+        y pegarla en una cadena definida previamente.
+        
+        Es esencial utilizarla para cambiar el valor de una cadena 
+        de texto que este dentro de una matriz o vector, esto debido
+        a que no es valido hacer por ejemplo:
+        vector[0] = "Hola mundo"
+
+    */
 
     for (int i = 0; i < MAX_DATOS; i++) {
         strcpy(nombre[i], "");
@@ -370,63 +570,11 @@ void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float lim
 
 }
 
-void imprimir_titulo(char titulo[64])
-{
 
-    int pos_texto = ((int)(MAX_BORDER / 2)) - ((int)(strlen(titulo) / 2));
+// --------------- //
+// J U A N J O S E //
+// --------------- //
 
-    for (int i = 0; i < 3; i++) {
-        
-        for (int v = 0; v < MAX_BORDER; v++) {
-            if (i == 1) {
-                if (v < pos_texto) {
-                    printf(" ");
-                    continue;
-                }
-                else if (v == pos_texto) {
-                    printf("%s", titulo);
-                    break;
-                }
-            }
-
-            printf("%c", CHAR_LINE);
-        }
-
-        printf("\n");
-    }
-
-}
-
-void imprimir_subtitulo(char subtitulo[64]) {
-    
-    int pos_texto = ((int)(MAX_BORDER / 2)) - ((int)(strlen(subtitulo) / 2));
-
-    for (int i = 0; i < MAX_BORDER; i++) {
-        if (i < pos_texto) {
-            printf(" ");
-            continue;
-        }
-        else if (i == pos_texto) {
-            printf("%s", subtitulo);
-            break;
-        }
-
-        printf("%c", CHAR_LINE);
-    }
-
-    printf("\n");
-
-}
-
-void imprimir_borde() {
-    for (int i = 0; i < MAX_BORDER; i++) {
-        printf("%c", CHAR_LINE);
-    }
-
-    printf("\n");
-}
-
-// ========= J U A N J O S E ========= //
 
 int Buscar_Hogar(char nombre_hogar[32], char nombre[MAX_DATOS][32])
 {
@@ -451,8 +599,8 @@ void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
     int temp_cantidad_personas;
     float temp_lim_diario;
 
-    imprimir_titulo("CONFIGURAR ELEMENTO");
-    imprimir_subtitulo("Ingrese los datos solicitados");
+    imprimirTitulo("CONFIGURAR ELEMENTO");
+    imprimirSubtitulo("Ingrese los datos solicitados");
     printf("\n");
 
     //// Leer datos y responder ante restricciones
@@ -466,11 +614,11 @@ void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
                                                                 /// volvemos a preguntar
         if (resultado_busqueda != -1)
         {
-            limpiar_pantalla();
+            limpiarPantalla();
             printf("[ERROR] Ya existe un elemento con este nombre.\n");
             printf("        Por favor ingrese los datos nuevamente.\n\n");
-            imprimir_titulo("CONFIGURAR ELEMENTO");
-            imprimir_subtitulo("Ingrese los datos solicitados");
+            imprimirTitulo("CONFIGURAR ELEMENTO");
+            imprimirSubtitulo("Ingrese los datos solicitados");
             printf("\n");
         }
 
@@ -497,7 +645,7 @@ void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
     guardarDatos(nombre, personas, limiteDiario, consumoLitros);
 
     printf("[AVISO] Datos guardados con exito para el hogar %d\n", temp_nombre_hogar);
-    limpiar_pantalla();
+    limpiarPantalla();
 }
 
 void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA])
@@ -508,9 +656,9 @@ void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float 
     int dia_eleccion;
     int consumo_seleccion;
 
-    imprimir_titulo("REGISTRAR DATOS");
-    imprimir_subtitulo("Configura el limite diario para");
-    imprimir_subtitulo("un hogar seleccioando");
+    imprimirTitulo("REGISTRAR DATOS");
+    imprimirSubtitulo("Configura el limite diario para");
+    imprimirSubtitulo("un hogar seleccioando");
     printf("\n");
 
     do
@@ -527,10 +675,10 @@ void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float 
         }
         else if(resultado_busqueda != -1)
         {
-            limpiar_pantalla();
-            imprimir_titulo("REGISTRAR DATOS");
-            imprimir_subtitulo("Configura el limite diario para");
-            imprimir_subtitulo("un hogar seleccioando");
+            limpiarPantalla();
+            imprimirTitulo("REGISTRAR DATOS");
+            imprimirSubtitulo("Configura el limite diario para");
+            imprimirSubtitulo("un hogar seleccioando");
             printf("\n");
             printf("[AVISO] Hogar existente encontrado\n");
             printf("Nombre: \"%s\"\n", temp_nombre_hogar);
@@ -563,7 +711,7 @@ void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float 
                 }
             }while(consumo_seleccion>LIM_LITRO);
             consumoLitros[resultado_busqueda][dia_eleccion]= consumo_seleccion;
-            limpiar_pantalla();
+            limpiarPantalla();
             printf("[AVISO] Limite establecido a: %d  para el dia %d\n", consumo_seleccion, dia_eleccion);
             printf("[AVISO] Datos para el hogar: \"%s\" guardados con exito\n", temp_nombre_hogar);
             printf("D E B U G: Limite actual para hogar  \"%s\" en el dia %d es %f", temp_nombre_hogar, dia_eleccion, consumoLitros[resultado_busqueda][dia_eleccion]);
@@ -583,9 +731,9 @@ void Modificar_Un_Dato(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], floa
     int dia_eleccion;
     int consumo_seleccion;
 
-    imprimir_titulo("MODIFICAR UN DATO");
-    imprimir_subtitulo("Modifica un dato ya");
-    imprimir_subtitulo("establecido para un hogar");
+    imprimirTitulo("MODIFICAR UN DATO");
+    imprimirSubtitulo("Modifica un dato ya");
+    imprimirSubtitulo("establecido para un hogar");
     printf("\n");
     do 
     {
@@ -601,9 +749,9 @@ void Modificar_Un_Dato(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], floa
         }
         else if(resultado_busqueda != -1)
         {
-            limpiar_pantalla();
-            imprimir_titulo("MODIFICAR UN DATO");
-            imprimir_subtitulo("Modifica un dato ya establecido para un hogar");
+            limpiarPantalla();
+            imprimirTitulo("MODIFICAR UN DATO");
+            imprimirSubtitulo("Modifica un dato ya establecido para un hogar");
             printf("\n");
             printf("[AVISO] Hogar existente encontrado\n");
             printf("Nombre: \"%s\"\n", temp_nombre_hogar); 
@@ -630,9 +778,9 @@ void Modificar_Un_Dato(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], floa
     
 }
 
-
-
-// ============ E L I A S ============ //
+// --------- //
+// E L I A S //
+// --------- //
 
 int obtener_datos() {
 
@@ -654,8 +802,26 @@ int aumentar_cantidad_datos() {
     return cantidadDatos += 1;
 }
 
+void imprimir_espacios(int cantidad, int tipo) {
+
+    if (tipo == 1) {
+        for (int i = 0; i < cantidad; i++) {
+            printf("%c", CHAR_SPACE);
+        }
+        return;
+    }
+
+    if (tipo == 2) {
+        for (int i = 0; i < cantidad; i++) {
+            printf("%s", CHAR_TABLE);
+        }
+        return;
+    }
+
+}
+
 void ods_info() {
-    imprimir_titulo("ODS 6: Agua Limpia y Saneamiento");
+    imprimirTitulo("ODS 6: Agua Limpia y Saneamiento");
     printf("\n");
     printf("Mas de medio millon de personas no tiene acceso a agua  potable\n");
     printf("segura a su ves el  problema del saneamiento, malas condiciones\n");
@@ -666,7 +832,7 @@ void ods_info() {
     printf("\n");
     printf("Ayuda a garantizar la disponibilidad y la gestion sostenible del agua \ny los servicios de saneamiento para todas las personas\n\n");
 
-    esperar_exit();
+    volverAlMenu();
 
 }
 
@@ -677,7 +843,7 @@ void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_
         log_num = 0,
         longitud_numero = 0;
 
-    imprimir_titulo("TABLA DIAS ");
+    imprimirTitulo("TABLA DIAS ");
     printf("\n");
 
     for (int i = 0; i < cantidadDatos; i++) {
@@ -741,25 +907,7 @@ void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_
 
     printf("\n");
 
-    esperar_exit();
-}
-
-void imprimir_espacios(int cantidad, int tipo) {
-
-    if (tipo == 1) {
-        for (int i = 0; i < cantidad; i++) {
-            printf(" ");
-        }
-        return;
-    }
-
-    if (tipo == 2) {
-        for (int i = 0; i < cantidad; i++) {
-            printf("─");
-        }
-        return;
-    }
-
+    volverAlMenu();
 }
 
 void cabecera_tabla(int maxNameLen) {

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
+#include <math.h>
 
 /*
 ====== PROGRESO ACTUAL =======
@@ -54,7 +55,7 @@
 #define MAX_BORDER 42 // Largo maximo de los headers
 #define CHAR_LINE '=' // Caracter que se usara como linea
 
-FILE *datos;        // Datos guardados
+FILE *datos;          // Datos guardados
 
 char nombre_datos[] = "datos.txt";
 
@@ -88,6 +89,8 @@ int obtener_datos();
 int aumentar_cantidad_datos();
 void ods_info();
 void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_SEMANA]);
+void imprimir_espacios(int cantidad, int tipo);
+void cabecera_tabla(int maxNameLen);
 
 int main() {
 
@@ -235,7 +238,7 @@ void esperar_exit() {
     */
 
     imprimir_borde();
-    printf("\nPresione la tecla ENTER para volver... \n\n");
+    printf("\nPresione la tecla ENTER para volver...    ");
 
     /*
         Con fgets() podemos leer el teclado y detectar cualquier caracter
@@ -585,9 +588,13 @@ void ods_info() {
 
 void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_SEMANA]){
 
-    int total_fila = 0,
-        maxNameLen = 0;
+    float total_fila = 0;
+    int maxNameLen = 0,
+        log_num = 0,
+        longitud_numero = 0;
 
+    imprimir_titulo("TABLA DIAS ");
+    printf("\n");
 
     for (int i = 0; i < cantidadDatos; i++) {
         
@@ -597,37 +604,94 @@ void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_
 
     }
 
-    imprimir_titulo("TABLA DIAS ");
-    printf("\n");
-
-    for (int i = 0; i < (maxNameLen + 3); i++) {
-        printf(" ");
-    }
-
-    printf("[DIA 1] [DIA 2] [DIA 3] [DIA 4] [DIA 5] [DIA 6] [DIA 7] [TOTAL]\n\n");
+    cabecera_tabla(maxNameLen);
 
     for (int i = 0; i < cantidadDatos; i++)
     {
         
-        printf("[%s] ", nombre[i]);
+        printf("%s ", nombre[i]);
         
-        for (int f = 0; f < (maxNameLen - strlen(nombre[i])); f++) {
-            printf(" ");
-        }
-        
+        imprimir_espacios(maxNameLen - strlen(nombre[i]), 1);
         
         for (int j = 0; j < DIAS_SEMANA; j++)
         {
-            if ((j+1) % 2 != 0) printf("| ");
+            if ((j+1) % 2 != 0) printf("│ ");
 
             printf("%.2f ", consumo_litros[i][j]);
+            
+            if (consumo_litros[i][j] == 0) log_num = 0;
+            else log_num = log10(consumo_litros[i][j]);
+            longitud_numero = round(log_num + 1);
 
-            if ((j+1) % 2 != 0) printf("| ");
+            imprimir_espacios((4 - longitud_numero), 1);
+
+            if ((j+1) % 2 != 0) printf("│ ");
+
+            total_fila += consumo_litros[i][j];
+            log_num = 0;
+            longitud_numero = 0;
         }
+
+        printf("%.2f", total_fila);
+        
+        if (total_fila == 0) log_num = 0;
+        else log_num = log10(total_fila);
+        longitud_numero = round(log_num + 1);
+        
+        imprimir_espacios((5 - longitud_numero), 1);
+
+        printf(" │");
+
+        total_fila = 0;
+
         printf("\n");
+        imprimir_espacios((maxNameLen + 1), 2);
+        
+        if (i != (cantidadDatos - 1))
+            printf("┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼──────────┤\n");
+            
+        else 
+            printf("┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴──────────┘\n");
+
     }
 
     printf("\n");
 
     esperar_exit();
+}
+
+void imprimir_espacios(int cantidad, int tipo) {
+
+    if (tipo == 1) {
+        for (int i = 0; i < cantidad; i++) {
+            printf(" ");
+        }
+        return;
+    }
+
+    if (tipo == 2) {
+        for (int i = 0; i < cantidad; i++) {
+            printf("─");
+        }
+        return;
+    }
+
+}
+
+void cabecera_tabla(int maxNameLen) {
+
+    int espacios = maxNameLen + 1;
+
+    imprimir_espacios(espacios, 1);
+
+    printf("┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬──────────┐\n");
+
+    imprimir_espacios(espacios, 1);
+    
+    printf("│ DIA 1   │ DIA 2   │ DIA 3   │ DIA 4   │ DIA 5   │ DIA 6   │ DIA 7   │ TOTAL    │\n");
+
+    imprimir_espacios(espacios, 2);
+
+    printf("┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼──────────┤\n");
+
 }

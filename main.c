@@ -106,6 +106,8 @@ void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float 
 void Modificar_Un_Dato(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 int verificacion_exceso(int indice_casa, float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 int verificacion_fuga(int indice_casa, float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
+int Operacion_Principal(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
+
 
 int obtener_datos();
 int aumentar_cantidad_datos();
@@ -218,6 +220,8 @@ int main() {
                 // ------------------------ //
                 // DETECTAR EXCESOS Y FUGAS //
                 // ------------------------ //
+
+                Operacion_Principal(nombre, personas, limiteDiario, consumoLitros);
 
                 limpiarPantalla();
 
@@ -861,6 +865,27 @@ int verificacion_fuga(int indice_casa, float limiteDiario[MAX_DATOS], float cons
     }
     return 0;
 }
+
+int Operacion_Principal(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA])
+{
+
+    imprimirTitulo("EXCESOS Y FUGAS");
+    imprimirSubtitulo("Verifica si el hogar contiene");
+    imprimirSubtitulo("algun exceso o fuga");
+    printf("\n");
+    int dias_exceso=0;
+    for(int i=0; i<CANTIDAD_DATOS; i++)
+    {
+        dias_exceso=verificacion_exceso(i, limiteDiario, consumoLitros);
+        printf("\n%s: %d dia(s) de exceso");
+        if(verificacion_fuga(i, limiteDiario, consumoLitros))
+        {
+            printf(" | POSIBLE FUGA");
+        }
+    }
+}
+
+
 // --------- //
 // E L I A S //
 // --------- //

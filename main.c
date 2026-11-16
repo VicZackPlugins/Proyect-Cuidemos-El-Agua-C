@@ -874,7 +874,7 @@ int Operacion_Principal(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], flo
     imprimirSubtitulo("algun exceso o fuga");
     printf("\n");
     int dias_exceso=0;
-    for(int i=0; i<cantidadDatos; i++)
+    for(int i=0; i<CANTIDAD_DATOS; i++)
     {
         dias_exceso=verificacion_exceso(i, limiteDiario, consumoLitros);
         printf("\n%s: %d dia(s) de exceso");

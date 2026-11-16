@@ -94,7 +94,7 @@ void imprimirBorde();
 void limpiarPantalla();
 void volverAlMenu();
 void mostrarMenu();
-void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
+void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario, float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
@@ -239,7 +239,7 @@ int main() {
                 // ---------------- //
 
                 limpiarPantalla();
-                mostrarEstadisticas(nombre, personas, consumoLitros);
+                mostrarEstadisticas(nombre, personas, limiteDiario, consumoLitros);
 
                 break;
             }
@@ -426,7 +426,7 @@ void mostrarMenu() {
     printf("Elija una opción: ");
 }
 
-void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
+void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
 
     float consumoTotalDeHogares = 0,
           consumoTotalHogarAnterior = 0,
@@ -434,7 +434,8 @@ void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
 
     float consumoPromedioPersona = 0;
     
-    int totalPersonas = 0;
+    int totalPersonas = 0,
+        totalDiasExceso = 0;
 
     int indexHogarMayorConsumo = 0;
 
@@ -455,9 +456,12 @@ void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
         consumoTotalHogarAnterior = consumoTotalHogarActual;    
         consumoTotalHogarActual = 0;
 
+        totalDiasExceso += verificacion_exceso(i, limiteDiario, consumoLitros);
+
     }
     
     printf("\n» Total de los hogares: %.2f L\n", consumoTotalDeHogares);
+    printf("» Total de días con exceso: %d\n", totalDiasExceso);
     printf("» Hogar con mayor consumo: %s\n", nombre[indexHogarMayorConsumo]);
     printf("\n┌ Promedio de litros por persona (L/PP) diario:\n");
 
@@ -844,14 +848,14 @@ int verificacion_fuga(int indice_casa, float limiteDiario[MAX_DATOS], float cons
     
     for(int i=0; i<DIAS_SEMANA; i++)
     {
-        promedio+=consumoLitros[indice_casa][i];
+        promedio_diario+=consumoLitros[indice_casa][i];
     }
 
-    promedio/=DIAS_SEMANA;
+    promedio_diario/=DIAS_SEMANA;
     
     for(int i=0; i<DIAS_SEMANA; i++)
     {
-        if(consumoLitros[indice_casa][i]>=promedio*2);
+        if(consumoLitros[indice_casa][i]>=promedio_diario*2);
         return 1;
     }
     return 0;

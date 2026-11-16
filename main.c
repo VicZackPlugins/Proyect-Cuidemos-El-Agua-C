@@ -94,6 +94,7 @@ void imprimirBorde();
 void limpiarPantalla();
 void volverAlMenu();
 void mostrarMenu();
+void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
@@ -236,6 +237,7 @@ int main() {
                 // ---------------- //
 
                 limpiarPantalla();
+                mostrarEstadisticas(nombre, personas, consumoLitros);
 
                 break;
             }
@@ -422,16 +424,19 @@ void mostrarMenu() {
     printf("Elija una opción: ");
 }
 
-void estadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
+void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
 
     float consumoTotalDeHogares = 0,
           consumoTotalHogarAnterior = 0,
-          consumoTotalHogarActual = 0,
-          consumoPromedioPersona = 0;
+          consumoTotalHogarActual = 0;
+
+    float consumoPromedioPersona = 0;
+    
+    int totalPersonas = 0;
 
     int indexHogarMayorConsumo = 0;
 
-    imprimirTitulo("ESTADÍSTICAS");
+    imprimirTitulo("ESTADÍSTICAS DE CONSUMO");
 
     for (int i = 0; i < cantidadDatos; i++) {
         
@@ -449,7 +454,31 @@ void estadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float con
         consumoTotalHogarActual = 0;
 
     }
+    
+    printf("\n» Total de los hogares: %.2f L\n", consumoTotalDeHogares);
+    printf("» Hogar con mayor consumo: %s\n", nombre[indexHogarMayorConsumo]);
+    printf("\n┌ Promedio de litros por persona (L/PP) diario:\n");
 
+    for (int i = 0; i < DIAS_SEMANA; i++) {
+        for (int v = 0; v < cantidadDatos; v++) {
+            consumoPromedioPersona += consumoLitros[v][i];
+
+            if (i == 0) {
+                totalPersonas += personas[v];
+            }
+
+        }
+        
+        consumoPromedioPersona /= totalPersonas;
+
+        printf("│ DIA %d: %.2f [L/PP]\n", (i + 1), consumoPromedioPersona);
+
+    }
+
+    printf("\n");
+
+    volverAlMenu();
+    limpiarPantalla();
 }
 
 void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
@@ -824,12 +853,14 @@ void ods_info() {
     printf("\n");
     printf("Mas de medio millon de personas no tiene acceso a agua  potable\n");
     printf("segura a su ves el  problema del saneamiento, malas condiciones\n");
-    printf("tambien aguas residuales; que se generan en casa en  los  baños\n");
+    printf("tambien aguas residuales, que se generan en casa en  los  baños\n");
     printf("es el causante de degradar el ecosistema y  el  mayor  problema\n");  
     printf("un grave deficit de financiamiento, como una  mala  gestion  de\n"); 
-    printf("las redes hidricas en zonas rurales\n");
+    printf("las redes hidricas en zonas rurales.\n");
     printf("\n");
-    printf("Ayuda a garantizar la disponibilidad y la gestion sostenible del agua \ny los servicios de saneamiento para todas las personas\n\n");
+    printf("¿Cómo este programa ayuda a esa meta?\n\n");
+    printf("Ayuda a garantizar la disponibilidad y  la  gestion  sostenible\n");
+    printf("del agua y servicios de saneamiento  para  todas  las  personas\n\n");
 
     volverAlMenu();
 
@@ -842,7 +873,8 @@ void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_
         log_num = 0,
         longitud_numero = 0;
 
-    imprimirTitulo("TABLA DIAS ");
+    imprimirTitulo("TABLA DIAS");
+    imprimirSubtitulo("Todos los valores representan Litros");
     printf("\n");
 
     for (int i = 0; i < cantidadDatos; i++) {

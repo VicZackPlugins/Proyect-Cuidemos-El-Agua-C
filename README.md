@@ -53,10 +53,10 @@ Usa constantes al inicio del programa para que sea fácil cambiarlas:
 1. ¿Qué ODS aborda este programa? LISTO
 2. Configurar elementos LISTO
 3. Registrar datos LISTO
-4. Modificar un dato FALTA
+4. Modificar un dato LISTO
 5. [Operación principal del proyecto] FALTA
 6. Ver tabla de datos LISTO
-7. Ver estadísticas FALTA
+7. Ver estadísticas LISTO
 8. Guardar datos LISTO
 9. Ayuda y Acerca de FALTA
 0. Salir LISTO

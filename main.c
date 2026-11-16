@@ -12,34 +12,9 @@
         QUE ESTA HECHO:
 
             >> Configurar Elementos         -- se supone que isto, faltan arreglos
-            >> Buscar_Hogar                 -- se supone que isto, faltan arreglos
+            >> buscarHogar                 -- se supone que isto, faltan arreglos
 
         QUE FALTA POR HACER:
-
-    === VISHO === :
-
-        QUE ESTA HECHO:
-
-            >>
-            >> 
-
-        QUE FALTA POR HACER:
-
-            >>
-            >> 
-
-
-    === ELIAS === : 
-
-        QUE ESTA HECHO:
-
-            >> 
-            >>
-
-        QUE FALTA POR HACER:
-
-            >>
-            >> 
 
 */
 
@@ -90,33 +65,34 @@ int CANTIDAD_DATOS = 0;              // CANTIDAD DE DATOS REGISTRADOS
 
 =============================== */
 
+// DECORACIONES VISUALES
 void imprimirTitulo(char titulo[64]);
 void imprimirSubtitulo(char subtitulo[64]);
 void imprimirBorde();
+void imprimirEspacios(int cantidad, int tipo);
+void imprimirCabeceraTabla(int maxNameLen);
+
+// UTILIDADES Y/O AUXILIARES
 void limpiarPantalla();
 void volverAlMenu();
-void mostrarMenu();
-void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
+int verificacionExceso(int indice_casa, float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
+int verificacionFuga(int indice_casa, float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
+int obtenerDatos();
+int aumentarCantidadDatos();
+int buscarHogar(char nombre_hogar[32], char nombre[MAX_DATOS][32]);
+
+// PRINCIPALES
+void mostrarMenu();
+void mostrarODS();
+void configurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
+void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
+void modificarDato(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
+void operacionPrincipal(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
+void mostrarTabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_SEMANA]);
+void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
-
-void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
-int Buscar_Hogar(char nombre_hogar[32], char nombre[MAX_DATOS][32]);
-
-void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
-void Modificar_Un_Dato(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
-int verificacion_exceso(int indice_casa, float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
-int verificacion_fuga(int indice_casa, float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
-int Operacion_Principal(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
-
-
-int obtener_datos();
-int aumentar_cantidad_datos();
-void imprimir_espacios(int cantidad, int tipo);
-void ods_info();
-void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_SEMANA]);
-void cabecera_tabla(int maxNameLen);
 
 /* ===============================
 
@@ -143,7 +119,7 @@ int main() {
 
     // INICIAR LOS ARREGLOS EN 0 o "" COMO VALORES POR DEFECTO
     iniciarArreglos(nombre, personas, limiteDiario, consumoLitros);
-    CANTIDAD_DATOS = obtener_datos();
+    CANTIDAD_DATOS = obtenerDatos();
 
     // VARIABLE PARA LEER LA ENTRADA DEL USUARIO
     int opciones;
@@ -184,7 +160,7 @@ int main() {
                 // ------------------------------ //
                 
                 limpiarPantalla();
-                ods_info();
+                mostrarODS();
 
                 break;
             }
@@ -194,7 +170,7 @@ int main() {
                 // -------------------- //
                 
                 limpiarPantalla();
-                ConfigurarElementos(nombre, personas, limiteDiario, consumoLitros);
+                configurarElementos(nombre, personas, limiteDiario, consumoLitros);
 
                 break;
             }
@@ -204,7 +180,7 @@ int main() {
                 // --------------- //
                 
                 limpiarPantalla();
-                Registrar_Datos(nombre, personas, limiteDiario, consumoLitros);
+                registrarDatos(nombre, personas, limiteDiario, consumoLitros);
                 
                 break;
             }
@@ -214,7 +190,7 @@ int main() {
                 // ----------------- //
 
                 limpiarPantalla();
-                Modificar_Un_Dato(nombre, personas, limiteDiario, consumoLitros);
+                modificarDato(nombre, personas, limiteDiario, consumoLitros);
 
                 break;
             }
@@ -223,7 +199,7 @@ int main() {
                 // DETECTAR EXCESOS Y FUGAS //
                 // ------------------------ //
                 limpiarPantalla();
-                Operacion_Principal(nombre, personas, limiteDiario, consumoLitros);
+                operacionPrincipal(nombre, personas, limiteDiario, consumoLitros);
 
                 break;
             }
@@ -233,7 +209,7 @@ int main() {
                 // ------------------ //
 
                 limpiarPantalla();
-                ver_tabla(nombre, consumoLitros);
+                mostrarTabla(nombre, consumoLitros);
                 
                 break;
             }
@@ -265,26 +241,6 @@ int main() {
 
                 break;
             }
-            case 10: {
-                // ========== T E S T ========== //
-                limpiarPantalla();
-
-                CANTIDAD_DATOS = 3;
-                
-                for (int i = 0; i < CANTIDAD_DATOS; i++) {
-                    strcpy(nombre[i], "NOMBRE");
-                    personas[i] = 20;
-                    limiteDiario[i] = 5.5;
-
-                    for (int v = 0; v < DIAS_SEMANA; v++) {
-                        consumoLitros[i][v] = 0.5;
-                    }
-                }
-
-                guardarDatos(nombre, personas, limiteDiario, consumoLitros);
-
-                break;
-            }
             default: {
                 limpiarPantalla();
                 printf("[ERROR] Debe ingresar una opcion valida.\n");
@@ -305,14 +261,15 @@ int main() {
 
 =============================== */
 
-
-// ------------- //
-// V I C E N T E //
-// ------------- //
-
+// =====================
+//
+// DECORACIONES VISUALES
+//
+// =====================
 
 void imprimirTitulo(char titulo[64])
 {
+    // FUNCION PARA IMPRIMIR TITULOS CON FORMATO AUTOMATIZADO Y CENTRADOS
 
     int pos_texto = ((int)(MAX_BORDER / 2)) - ((int)(strlen(titulo) / 2));
 
@@ -339,7 +296,8 @@ void imprimirTitulo(char titulo[64])
 }
 
 void imprimirSubtitulo(char subtitulo[64]) {
-    
+    // FUNCION PARA IMPRIMIR SUBTITULOS CENTRADOS
+
     int pos_texto = ((int)(MAX_BORDER / 2)) - ((int)(strlen(subtitulo) / 2));
 
     for (int i = 0; i < MAX_BORDER; i++) {
@@ -360,12 +318,58 @@ void imprimirSubtitulo(char subtitulo[64]) {
 }
 
 void imprimirBorde() {
+    // IMPRIMIR BORDES DE LOS TITULOS
+
     for (int i = 0; i < MAX_BORDER; i++) {
         printf("%c", CHAR_LINE);
     }
 
     printf("\n");
 }
+
+void imprimirEspacios(int cantidad, int tipo) {
+    // FUNCION PARA IMPRIMIR ESPACIOS CON UN FORMATO EN ESPECIFICO
+
+    if (tipo == 1) {
+        for (int i = 0; i < cantidad; i++) {
+            printf("%c", CHAR_SPACE);
+        }
+        return;
+    }
+
+    if (tipo == 2) {
+        for (int i = 0; i < cantidad; i++) {
+            printf("%s", CHAR_TABLE);
+        }
+        return;
+    }
+
+}
+
+void imprimirCabeceraTabla(int maxNameLen) {
+    // FUNCION PARA IMPRIMIR LA CABECERA DE LA TABLA DE DATOS
+
+    int espacios = maxNameLen + 1;
+
+    imprimirEspacios(espacios, 1);
+
+    printf("┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬──────────┐\n");
+
+    imprimirEspacios(espacios, 1);
+    
+    printf("│ DIA 1   │ DIA 2   │ DIA 3   │ DIA 4   │ DIA 5   │ DIA 6   │ DIA 7   │ TOTAL    │\n");
+
+    imprimirEspacios(espacios, 2);
+
+    printf("┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼──────────┤\n");
+
+}
+
+// =========================
+//
+// UTILIDADES Y/O AUXILIARES
+//
+// =========================
 
 void limpiarPantalla() {
     // FUNCION PARA LIMPIAR LA PANTALLA
@@ -419,78 +423,6 @@ void volverAlMenu() {
 
 }
 
-void mostrarMenu() {
-    // FUNCION PARA MOSTRAR EL MENU DE INICIO
-
-    imprimirTitulo("CUIDEMOS EL AGUA - ODS N° 6");
-    printf("\n 1. ¿Qué ODS aborda este programa? \n 2. Configurar elementos \n 3. Registrar datos \n 4. Modificar un dato\n");
-    printf(" 5. Detectar excesos y fugas \n 6. Ver tabla de datos \n 7. Ver estadísticas \n 8. Guardar datos\n");
-    printf(" 9. Ayuda y Acerca de \n 0. Salir \n\n");
-    imprimirBorde();
-    printf("Elija una opción: ");
-}
-
-void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
-
-    float consumoTotalDeHogares = 0,
-          consumoTotalHogarAnterior = 0,
-          consumoTotalHogarActual = 0;
-
-    float consumoPromedioPersona = 0;
-    
-    int totalPersonas = 0,
-        totalDiasExceso = 0;
-
-    int indexHogarMayorConsumo = 0;
-
-    imprimirTitulo("ESTADÍSTICAS DE CONSUMO");
-
-    for (int i = 0; i < CANTIDAD_DATOS; i++) {
-        
-        for (int v = 0; v < DIAS_SEMANA; v++) {
-            consumoTotalDeHogares += consumoLitros[i][v];
-            
-            consumoTotalHogarActual += consumoLitros[i][v];
-        }
-
-        if (consumoTotalHogarActual > consumoTotalHogarAnterior) {
-            indexHogarMayorConsumo = i;
-        }
-        
-        consumoTotalHogarAnterior = consumoTotalHogarActual;    
-        consumoTotalHogarActual = 0;
-
-        totalDiasExceso += verificacion_exceso(i, limiteDiario, consumoLitros);
-
-    }
-    
-    printf("\n» Total de los hogares: %.2f L\n", consumoTotalDeHogares);
-    printf("» Total de días con exceso: %d\n", totalDiasExceso);
-    printf("» Hogar con mayor consumo: %s\n", nombre[indexHogarMayorConsumo]);
-    printf("\n┌ Promedio de litros por persona (L/PP) diario:\n");
-
-    for (int i = 0; i < DIAS_SEMANA; i++) {
-        for (int v = 0; v < CANTIDAD_DATOS; v++) {
-            consumoPromedioPersona += consumoLitros[v][i];
-
-            if (i == 0) {
-                totalPersonas += personas[v];
-            }
-
-        }
-        
-        consumoPromedioPersona /= totalPersonas;
-
-        printf("│ DIA %d: %.2f [L/PP]\n", (i + 1), consumoPromedioPersona);
-
-    }
-
-    printf("\n");
-
-    volverAlMenu();
-    limpiarPantalla();
-}
-
 void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
     // FUNCION PARA INICIAR LOS ARREGLOS EN 0 O EN "" COMO VALORES POR DEFECTO
     /*
@@ -518,6 +450,7 @@ void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float 
 }
 
 void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
+    // FUNCION PARA CARGAR LOS DATOS DEL ARCHIVO .TXT A LOS ARREGLOS Y VARIABLES CORRESPONDIENTES
 
     datos = fopen(nombre_datos, "r");
     if (datos == NULL) {
@@ -574,47 +507,68 @@ void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
 
 }
 
-void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
+int verificacionExceso(int indice_casa, float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA])
+{
 
-    datos = fopen(nombre_datos, "w");
+    //// VERIFICACION EXCESO AGARRA UN HOGAR Y DIA Y VERIFICA SI SU CONSUMO DIARIO NO ES SUPERIOR A SU LIMITE ESTABLECIDO EN EL HOGAR
 
-    fprintf(datos, "%d\n", CANTIDAD_DATOS);
-
-    for (int i = 0; i < CANTIDAD_DATOS; i++) {
-        fprintf(datos, "%s %d %f\n", nombre[i], personas[i], limiteDiario[i]);
-    }
-
-    for (int i = 0; i < CANTIDAD_DATOS; i++){
-        
-        for (int v = 0; v < DIAS_SEMANA; v++) {
-            if (v < DIAS_SEMANA - 1) {
-
-                fprintf(datos, "%f ", consumoLitros[i][v]);
-
-            } else if (i != CANTIDAD_DATOS - 1 && v == DIAS_SEMANA - 1) {
-
-                fprintf(datos, "%f\n", consumoLitros[i][v]);
-
-            } else if (i == CANTIDAD_DATOS - 1 && v == DIAS_SEMANA - 1) {
-                
-                fprintf(datos, "%f", consumoLitros[i][v]); 
-            
-            }
+    int dias_exceso=0;
+    for(int i=0; i<DIAS_SEMANA; i++)
+    {
+        if(consumoLitros[indice_casa][i]>limiteDiario[indice_casa])
+        {
+            dias_exceso++;
         }
-
     }
-
-    fclose(datos);
-
+    return dias_exceso;
 }
 
+int verificacionFuga(int indice_casa, float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA])
+{
 
-// --------------- //
-// J U A N J O S E //
-// --------------- //
+    ///// VERIFICACION FUGA AGARRA UN HOGAR Y, EN BASE A SI SUPERA EL DOBLE DEL PROMEDIO O NO, ESTABLECER SI EXISTE UNA FUGA
+    
+    int promedio_diario=0;
+    
+    for(int i=0; i<DIAS_SEMANA; i++)
+    {
+        promedio_diario+=consumoLitros[indice_casa][i];
+    }
 
+    promedio_diario/=DIAS_SEMANA;
+    
+    for(int i=0; i<DIAS_SEMANA; i++)
+    {
+        if(consumoLitros[indice_casa][i]>=promedio_diario*2);
+        return 1;
+    }
+    return 0;
+}
 
-int Buscar_Hogar(char nombre_hogar[32], char nombre[MAX_DATOS][32])
+int obtenerDatos() {
+    // FUNCION PARA OBTENER LA CANTIDAD DE DATOS DESDE EL ARCHIVO .TXT
+
+    int cantidad_datos = 0;
+    
+    datos = fopen(nombre_datos, "r");
+    if (datos == NULL) {
+        return 0;
+    }
+
+    fscanf(datos, "%d", &cantidad_datos);
+
+    fclose (datos);
+
+    return cantidad_datos;
+}
+
+int aumentarCantidadDatos() {
+    // FUNCION PARA AUMENTAR LA CANTIDAD DE DATOS DE LA VARIABLE GLOBAL CANTIDAD_DATOS
+
+    return CANTIDAD_DATOS += 1;
+}
+
+int buscarHogar(char nombre_hogar[32], char nombre[MAX_DATOS][32])
 {
     for (int i=0; i< CANTIDAD_DATOS; i++) 
     {
@@ -626,7 +580,44 @@ int Buscar_Hogar(char nombre_hogar[32], char nombre[MAX_DATOS][32])
     return -1;  
 }
 
-void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) 
+// ===========
+//
+// PRINCIPALES
+//
+// ===========
+
+void mostrarMenu() {
+    // FUNCION PARA MOSTRAR EL MENU DE INICIO
+
+    imprimirTitulo("CUIDEMOS EL AGUA - ODS N° 6");
+    printf("\n 1. ¿Qué ODS aborda este programa? \n 2. Configurar elementos \n 3. Registrar datos \n 4. Modificar un dato\n");
+    printf(" 5. Detectar excesos y fugas \n 6. Ver tabla de datos \n 7. Ver estadísticas \n 8. Guardar datos\n");
+    printf(" 9. Ayuda y Acerca de \n 0. Salir \n\n");
+    imprimirBorde();
+    printf("Elija una opción: ");
+}
+
+void mostrarODS() {
+    // FUNCION PARA MOSTRAR LA INFORMACION DEL ODS
+
+    imprimirTitulo("ODS 6: Agua Limpia y Saneamiento");
+    printf("\n");
+    printf("Mas de medio millon de personas no tiene acceso a agua  potable\n");
+    printf("segura a su ves el  problema del saneamiento, malas condiciones\n");
+    printf("tambien aguas residuales, que se generan en casa en  los  baños\n");
+    printf("es el causante de degradar el ecosistema y  el  mayor  problema\n");  
+    printf("un grave deficit de financiamiento, como una  mala  gestion  de\n"); 
+    printf("las redes hidricas en zonas rurales.\n");
+    printf("\n");
+    printf("¿Cómo este programa ayuda a esa meta?\n\n");
+    printf("Ayuda a garantizar la disponibilidad y  la  gestion  sostenible\n");
+    printf("del agua y servicios de saneamiento  para  todas  las  personas\n\n");
+
+    volverAlMenu();
+
+}
+
+void configurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) 
 {
     //// FUNCION PARA ESTABLECER VALORES EN UN HOGAR, PERSONAS Y CONSUMO QUE NO TENGAN EXISTENTES
 
@@ -645,7 +636,7 @@ void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
         printf("| Nombre del hogar: \n| >> "); //// Nombre del hogar a evaluar
         scanf("%s", temp_nombre_hogar); //// escaneamos la temporal para comparar caracteres
         fflush(stdin);
-        resultado_busqueda = Buscar_Hogar(temp_nombre_hogar, nombre);   /// si el resultado de busqueda no coincide con el nombre de un hogar existente
+        resultado_busqueda = buscarHogar(temp_nombre_hogar, nombre);   /// si el resultado de busqueda no coincide con el nombre de un hogar existente
                                                                 /// volvemos a preguntar
         if (resultado_busqueda != -1)
         {
@@ -682,7 +673,7 @@ void ConfigurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
     }while(temp_cantidad_personas>MAX_PERSONAS || temp_cantidad_personas<MIN_PERSONAS);
 
 
-    int cantidad_datos = aumentar_cantidad_datos();     /// inicializamos la cantidad de datos como local para poder utilizarla
+    int cantidad_datos = aumentarCantidadDatos();     /// inicializamos la cantidad de datos como local para poder utilizarla
     int indice = cantidad_datos - 1;
 
     strcpy(nombre[indice], temp_nombre_hogar);   //// pasamos el valor de la funcion original a cantidad de datos
@@ -775,7 +766,7 @@ void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float 
     }
 }
 
-void Modificar_Un_Dato(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA])
+void modificarDato(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA])
 {
 
     ///////// FUNCION MODIFICAR DATO TE PERMITE MODIFICAR LOS DATOS QUE YA INGRESASTE Y CAMBIARLOS POR OTROS (SOLO CONSUMO DIARIO)
@@ -845,46 +836,7 @@ void Modificar_Un_Dato(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], floa
     }
 }
 
-
-int verificacion_exceso(int indice_casa, float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA])
-{
-
-    //// VERIFICACION EXCESO AGARRA UN HOGAR Y DIA Y VERIFICA SI SU CONSUMO DIARIO NO ES SUPERIOR A SU LIMITE ESTABLECIDO EN EL HOGAR
-
-    int dias_exceso=0;
-    for(int i=0; i<DIAS_SEMANA; i++)
-    {
-        if(consumoLitros[indice_casa][i]>limiteDiario[indice_casa])
-        {
-            dias_exceso++;
-        }
-    }
-    return dias_exceso;
-}
-
-int verificacion_fuga(int indice_casa, float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA])
-{
-
-    ///// VERIFICACION FUGA AGARRA UN HOGAR Y, EN BASE A SI SUPERA EL DOBLE DEL PROMEDIO O NO, ESTABLECER SI EXISTE UNA FUGA
-    
-    int promedio_diario=0;
-    
-    for(int i=0; i<DIAS_SEMANA; i++)
-    {
-        promedio_diario+=consumoLitros[indice_casa][i];
-    }
-
-    promedio_diario/=DIAS_SEMANA;
-    
-    for(int i=0; i<DIAS_SEMANA; i++)
-    {
-        if(consumoLitros[indice_casa][i]>=promedio_diario*2);
-        return 1;
-    }
-    return 0;
-}
-
-int Operacion_Principal(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA])
+void operacionPrincipal(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA])
 {
 
     ///// OPERACION PRINCIPAL ES EN DONDE SE MUESTRAN LOS DATOS DE UN HOGAR (CANTIDAD DE DIAS EXCESO Y EXISTENCIA DE FUGAS)
@@ -896,9 +848,9 @@ int Operacion_Principal(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], flo
     int dias_exceso=0;
     for(int i=0; i<CANTIDAD_DATOS; i++)
     {
-        dias_exceso=verificacion_exceso(i, limiteDiario, consumoLitros);
+        dias_exceso=verificacionExceso(i, limiteDiario, consumoLitros);
         printf("\n%s: %d dia(s) de exceso", dias_exceso ,dias_exceso);
-        if(verificacion_fuga(i, limiteDiario, consumoLitros))
+        if(verificacionFuga(i, limiteDiario, consumoLitros))
         {
             printf(" | POSIBLE FUGA");
         }
@@ -906,68 +858,8 @@ int Operacion_Principal(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], flo
     printf("\n");
 }
 
-
-// --------- //
-// E L I A S //
-// --------- //
-
-int obtener_datos() {
-
-    int cantidad_datos = 0;
-    
-    datos = fopen(nombre_datos, "r");
-    if (datos == NULL) {
-        return 0;
-    }
-
-    fscanf(datos, "%d", &cantidad_datos);
-
-    fclose (datos);
-
-    return cantidad_datos;
-}
-
-int aumentar_cantidad_datos() {
-    return CANTIDAD_DATOS += 1;
-}
-
-void imprimir_espacios(int cantidad, int tipo) {
-
-    if (tipo == 1) {
-        for (int i = 0; i < cantidad; i++) {
-            printf("%c", CHAR_SPACE);
-        }
-        return;
-    }
-
-    if (tipo == 2) {
-        for (int i = 0; i < cantidad; i++) {
-            printf("%s", CHAR_TABLE);
-        }
-        return;
-    }
-
-}
-
-void ods_info() {
-    imprimirTitulo("ODS 6: Agua Limpia y Saneamiento");
-    printf("\n");
-    printf("Mas de medio millon de personas no tiene acceso a agua  potable\n");
-    printf("segura a su ves el  problema del saneamiento, malas condiciones\n");
-    printf("tambien aguas residuales, que se generan en casa en  los  baños\n");
-    printf("es el causante de degradar el ecosistema y  el  mayor  problema\n");  
-    printf("un grave deficit de financiamiento, como una  mala  gestion  de\n"); 
-    printf("las redes hidricas en zonas rurales.\n");
-    printf("\n");
-    printf("¿Cómo este programa ayuda a esa meta?\n\n");
-    printf("Ayuda a garantizar la disponibilidad y  la  gestion  sostenible\n");
-    printf("del agua y servicios de saneamiento  para  todas  las  personas\n\n");
-
-    volverAlMenu();
-
-}
-
-void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_SEMANA]){
+void mostrarTabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_SEMANA]){
+    // FUNCION PARA VER LA TABLA DE DATOS DE LA MATRIZ
 
     float total_fila = 0;
     int maxNameLen = 0,
@@ -986,14 +878,14 @@ void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_
 
     }
 
-    cabecera_tabla(maxNameLen);
+    imprimirCabeceraTabla(maxNameLen);
 
     for (int i = 0; i < CANTIDAD_DATOS; i++)
     {
         
         printf("%s ", nombre[i]);
         
-        imprimir_espacios(maxNameLen - strlen(nombre[i]), 1);
+        imprimirEspacios(maxNameLen - strlen(nombre[i]), 1);
         
         for (int j = 0; j < DIAS_SEMANA; j++)
         {
@@ -1005,7 +897,7 @@ void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_
             else log_num = log10(consumo_litros[i][j]);
             longitud_numero = round(log_num + 1);
 
-            imprimir_espacios((4 - longitud_numero), 1);
+            imprimirEspacios((4 - longitud_numero), 1);
 
             if ((j+1) % 2 != 0) printf("│ ");
 
@@ -1020,14 +912,14 @@ void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_
         else log_num = log10(total_fila);
         longitud_numero = round(log_num + 1);
         
-        imprimir_espacios((5 - longitud_numero), 1);
+        imprimirEspacios((5 - longitud_numero), 1);
 
         printf(" │");
 
         total_fila = 0;
 
         printf("\n");
-        imprimir_espacios((maxNameLen + 1), 2);
+        imprimirEspacios((maxNameLen + 1), 2);
         
         if (i != (CANTIDAD_DATOS - 1))
             printf("┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼──────────┤\n");
@@ -1042,20 +934,104 @@ void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_
     volverAlMenu();
 }
 
-void cabecera_tabla(int maxNameLen) {
+void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
+    // FUNCION PARA MOSTRAR LAS ESTADISTICAS DE LOS DATOS
 
-    int espacios = maxNameLen + 1;
 
-    imprimir_espacios(espacios, 1);
+    float consumoTotalDeHogares = 0,
+          consumoTotalHogarAnterior = 0,
+          consumoTotalHogarActual = 0;
 
-    printf("┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬──────────┐\n");
-
-    imprimir_espacios(espacios, 1);
+    float consumoPromedioPersona = 0;
     
-    printf("│ DIA 1   │ DIA 2   │ DIA 3   │ DIA 4   │ DIA 5   │ DIA 6   │ DIA 7   │ TOTAL    │\n");
+    int totalPersonas = 0,
+        totalDiasExceso = 0;
 
-    imprimir_espacios(espacios, 2);
+    int indexHogarMayorConsumo = 0;
 
-    printf("┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼──────────┤\n");
+    imprimirTitulo("ESTADÍSTICAS DE CONSUMO");
 
+    for (int i = 0; i < CANTIDAD_DATOS; i++) {
+        
+        for (int v = 0; v < DIAS_SEMANA; v++) {
+            consumoTotalDeHogares += consumoLitros[i][v];
+            
+            consumoTotalHogarActual += consumoLitros[i][v];
+        }
+
+        if (consumoTotalHogarActual > consumoTotalHogarAnterior) {
+            indexHogarMayorConsumo = i;
+        }
+        
+        consumoTotalHogarAnterior = consumoTotalHogarActual;    
+        consumoTotalHogarActual = 0;
+
+        totalDiasExceso += verificacionExceso(i, limiteDiario, consumoLitros);
+
+    }
+    
+    printf("\n» Consumo total de los hogares: %.2f L\n", consumoTotalDeHogares);
+    printf("» Total de días con exceso de consumo: %d\n", totalDiasExceso);
+    printf("» Hogar con mayor el consumo: %s\n", nombre[indexHogarMayorConsumo]);
+    printf("\n┌ Promedio de litros por persona (L/PP) diario:\n");
+
+    for (int i = 0; i < DIAS_SEMANA; i++) {
+        for (int v = 0; v < CANTIDAD_DATOS; v++) {
+            consumoPromedioPersona += consumoLitros[v][i];
+
+            if (i == 0) {
+                totalPersonas += personas[v];
+            }
+
+        }
+        
+        consumoPromedioPersona /= totalPersonas;
+
+        printf("│ DIA %d: %.2f [L/PP]\n", (i + 1), consumoPromedioPersona);
+
+    }
+
+    printf("\n");
+
+    volverAlMenu();
+    limpiarPantalla();
+}
+
+void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
+    // FUNCION PARA GUARDAR LOS DATOS DE LOS ARREGLOS Y VARIABLES CORRESPONDIENTES EN EL ARCHIVO .TXT
+
+    datos = fopen(nombre_datos, "w");
+
+    fprintf(datos, "%d\n", CANTIDAD_DATOS);
+
+    for (int i = 0; i < CANTIDAD_DATOS; i++) {
+        fprintf(datos, "%s %d %f\n", nombre[i], personas[i], limiteDiario[i]);
+    }
+
+    for (int i = 0; i < CANTIDAD_DATOS; i++){
+        
+        for (int v = 0; v < DIAS_SEMANA; v++) {
+            if (v < DIAS_SEMANA - 1) {
+
+                fprintf(datos, "%f ", consumoLitros[i][v]);
+
+            } else if (i != CANTIDAD_DATOS - 1 && v == DIAS_SEMANA - 1) {
+
+                fprintf(datos, "%f\n", consumoLitros[i][v]);
+
+            } else if (i == CANTIDAD_DATOS - 1 && v == DIAS_SEMANA - 1) {
+                
+                fprintf(datos, "%f", consumoLitros[i][v]); 
+            
+            }
+        }
+
+    }
+
+    fclose(datos);
+
+}
+
+void mostrarAcercaDeAyuda() {
+    // FUNCION PARA MOSTRAR ACERCA DE Y AYUDA
 }

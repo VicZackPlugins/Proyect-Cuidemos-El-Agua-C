@@ -80,7 +80,7 @@ char nombre_datos[] = "datos.txt";  // NOMBRE DEL ARCHIVO DONDE SE GUARDARAN LOS
 // datos = fopen("datos.txt", a); APPEND
 // fclose(file)
 
-int cantidadDatos = 0;              // CANTIDAD DE DATOS REGISTRADOS
+int CANTIDAD_DATOS = 0;              // CANTIDAD DE DATOS REGISTRADOS
 
 /* ===============================
 
@@ -139,7 +139,7 @@ int main() {
 
     // INICIAR LOS ARREGLOS EN 0 o "" COMO VALORES POR DEFECTO
     iniciarArreglos(nombre, personas, limiteDiario, consumoLitros);
-    cantidadDatos = obtener_datos();
+    CANTIDAD_DATOS = obtener_datos();
 
     // VARIABLE PARA LEER LA ENTRADA DEL USUARIO
     int opciones;
@@ -265,9 +265,9 @@ int main() {
                 // ========== T E S T ========== //
                 limpiarPantalla();
 
-                cantidadDatos = 3;
+                CANTIDAD_DATOS = 3;
                 
-                for (int i = 0; i < cantidadDatos; i++) {
+                for (int i = 0; i < CANTIDAD_DATOS; i++) {
                     strcpy(nombre[i], "NOMBRE");
                     personas[i] = 20;
                     limiteDiario[i] = 5.5;
@@ -441,7 +441,7 @@ void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
 
     imprimirTitulo("ESTADÍSTICAS DE CONSUMO");
 
-    for (int i = 0; i < cantidadDatos; i++) {
+    for (int i = 0; i < CANTIDAD_DATOS; i++) {
         
         for (int v = 0; v < DIAS_SEMANA; v++) {
             consumoTotalDeHogares += consumoLitros[i][v];
@@ -466,7 +466,7 @@ void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
     printf("\n┌ Promedio de litros por persona (L/PP) diario:\n");
 
     for (int i = 0; i < DIAS_SEMANA; i++) {
-        for (int v = 0; v < cantidadDatos; v++) {
+        for (int v = 0; v < CANTIDAD_DATOS; v++) {
             consumoPromedioPersona += consumoLitros[v][i];
 
             if (i == 0) {
@@ -531,22 +531,22 @@ void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
 
     while(fgets(buffer, sizeof(buffer), datos) != NULL) {
         if (linea == 1) {
-            sscanf(buffer, "%d", &cantidadDatos);
+            sscanf(buffer, "%d", &CANTIDAD_DATOS);
             linea++;
             continue;
         }
 
-        if (linea <= (cantidadDatos + 1)) {
+        if (linea <= (CANTIDAD_DATOS + 1)) {
             sscanf(buffer, "%s %d %f", nombre[index], &personas[index], &limiteDiario[index]);
             index++;
             linea++;
 
-            if (index >= cantidadDatos) index = 0;
+            if (index >= CANTIDAD_DATOS) index = 0;
 
             continue;
         }
 
-        if (linea > (cantidadDatos + 1)) {
+        if (linea > (CANTIDAD_DATOS + 1)) {
             for (int i = 0; i < DIAS_SEMANA; i++) {
                 sscanf(buffer, "%f %f %f %f %f %f %f", 
                     &consumoLitros[index][0], 
@@ -574,24 +574,24 @@ void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float lim
 
     datos = fopen(nombre_datos, "w");
 
-    fprintf(datos, "%d\n", cantidadDatos);
+    fprintf(datos, "%d\n", CANTIDAD_DATOS);
 
-    for (int i = 0; i < cantidadDatos; i++) {
+    for (int i = 0; i < CANTIDAD_DATOS; i++) {
         fprintf(datos, "%s %d %f\n", nombre[i], personas[i], limiteDiario[i]);
     }
 
-    for (int i = 0; i < cantidadDatos; i++){
+    for (int i = 0; i < CANTIDAD_DATOS; i++){
         
         for (int v = 0; v < DIAS_SEMANA; v++) {
             if (v < DIAS_SEMANA - 1) {
 
                 fprintf(datos, "%f ", consumoLitros[i][v]);
 
-            } else if (i != cantidadDatos - 1 && v == DIAS_SEMANA - 1) {
+            } else if (i != CANTIDAD_DATOS - 1 && v == DIAS_SEMANA - 1) {
 
                 fprintf(datos, "%f\n", consumoLitros[i][v]);
 
-            } else if (i == cantidadDatos - 1 && v == DIAS_SEMANA - 1) {
+            } else if (i == CANTIDAD_DATOS - 1 && v == DIAS_SEMANA - 1) {
                 
                 fprintf(datos, "%f", consumoLitros[i][v]); 
             
@@ -612,7 +612,7 @@ void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float lim
 
 int Buscar_Hogar(char nombre_hogar[32], char nombre[MAX_DATOS][32])
 {
-    for (int i=0; i< cantidadDatos; i++) 
+    for (int i=0; i< CANTIDAD_DATOS; i++) 
     {
         if(strcmp(nombre_hogar, nombre[i]) == 0) 
         {
@@ -882,7 +882,7 @@ int obtener_datos() {
 }
 
 int aumentar_cantidad_datos() {
-    return cantidadDatos += 1;
+    return CANTIDAD_DATOS += 1;
 }
 
 void imprimir_espacios(int cantidad, int tipo) {
@@ -932,7 +932,7 @@ void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_
     imprimirSubtitulo("Todos los valores representan Litros");
     printf("\n");
 
-    for (int i = 0; i < cantidadDatos; i++) {
+    for (int i = 0; i < CANTIDAD_DATOS; i++) {
         
         if (strlen(nombre[i]) > maxNameLen) {
             maxNameLen = strlen(nombre[i]);
@@ -942,7 +942,7 @@ void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_
 
     cabecera_tabla(maxNameLen);
 
-    for (int i = 0; i < cantidadDatos; i++)
+    for (int i = 0; i < CANTIDAD_DATOS; i++)
     {
         
         printf("%s ", nombre[i]);
@@ -983,7 +983,7 @@ void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_
         printf("\n");
         imprimir_espacios((maxNameLen + 1), 2);
         
-        if (i != (cantidadDatos - 1))
+        if (i != (CANTIDAD_DATOS - 1))
             printf("┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼─────────┼──────────┤\n");
             
         else 

@@ -4,20 +4,6 @@
 #include <windows.h>
 #include <math.h>
 
-/*
-====== PROGRESO ACTUAL =======
-
-    === JUAN JOSEXO === :
-
-        QUE ESTA HECHO:
-
-            >> Configurar Elementos         -- se supone que isto, faltan arreglos
-            >> buscarHogar                 -- se supone que isto, faltan arreglos
-
-        QUE FALTA POR HACER:
-
-*/
-
 /* ===============================
 
           CONFIGURACIONES
@@ -80,6 +66,9 @@ int verificacionFuga(int indice_casa, float limiteDiario[MAX_DATOS], float consu
 int obtenerDatos();
 int aumentarCantidadDatos();
 int buscarHogar(char nombre_hogar[32], char nombre[MAX_DATOS][32]);
+int leerOpcionMenu();
+int leerNumeroEntero();
+float leerNumeroFlotante();
 
 // PRINCIPALES
 void mostrarMenu();
@@ -119,9 +108,6 @@ int main() {
     iniciarArreglos(nombre, personas, limiteDiario, consumoLitros);
     CANTIDAD_DATOS = obtenerDatos();
 
-    // VARIABLE PARA LEER LA ENTRADA DEL USUARIO
-    int opciones;
-
     // LIMPIAR LA PANTALLA ANTES PARA NO ACUMULAR INFORMACION
     // Y TODO QUEDE MAS LEGIBLE
     limpiarPantalla();
@@ -129,13 +115,16 @@ int main() {
     // CARGAMOS LOS DATOS DEL ARCHIVO A LOS ARREGLOS Y VARIABLES CORRESPONDIENTES
     cargarDatosArchivos(nombre, personas, limiteDiario, consumoLitros);
 
+    // VARIABLE PARA LEER LA ENTRADA DEL USUARIO
+    int opciones;
+
     do {
         
         // MOSTRAR EL MENU DE OPCIONES
         mostrarMenu();
         
         // LEER LA ENTRADA DEL USUARIO
-        scanf("%d", &opciones);
+        opciones = leerOpcionMenu();
 
         // LIMPIAR EL INGRESO DE LA TECLA ENTER
         fflush(stdin);
@@ -241,7 +230,7 @@ int main() {
             }
             default: {
                 limpiarPantalla();
-                printf("[ERROR] Debe ingresar una opcion valida.\n");
+                printf("[ERROR] Debe ingresar una opción válida.\n");
             }
 
         }
@@ -576,6 +565,92 @@ int buscarHogar(char nombre_hogar[32], char nombre[MAX_DATOS][32])
         }
     }
     return -1;  
+}
+
+int leerOpcionMenu() {
+    // FUNCION PARA LEER UNA OPCION DEL MENU VALIDA
+    /*
+        scanf() retorna el valor de 1 si leyo los datos de forma correcta,
+        en caso de que se le ingrese un dato que sea distinto a lo esperado
+        este retorna 0.
+
+        Con este concepto se puede validar y evitar bucles infinitos al
+        ingresar datos de tipos erroneos en una entrada donde por ejemplo
+        se espera un entero.
+    */
+
+    int opcion;
+
+    // VERIFICAR SI scanf() FALLA, DE SER ASI SE PIDE LA ENTRADA 
+    // NUEVAMENTE Y SE IMPRIME UN MENSAJE DE ERROR
+    while (scanf("%d", &opcion) != 1) {
+        limpiarPantalla();
+        printf("[ERROR] Debe ingresar una opción válida.\n");
+        mostrarMenu();
+
+        // LIMPIAR LA ENTRADA PARA LEER LA VARIABLE "LIMPIA"
+        // SIN LA INFORMACION ANTERIOR
+        while (getchar() != '\n');
+    }
+    
+    return opcion;
+
+}
+
+int leerNumeroEntero() {
+    // FUNCION PARA LEER UN DATO TIPO ENTERO VALIDO
+    /*
+        scanf() retorna el valor de 1 si leyo los datos de forma correcta,
+        en caso de que se le ingrese un dato que sea distinto a lo esperado
+        este retorna 0.
+
+        Con este concepto se puede validar y evitar bucles infinitos al
+        ingresar datos de tipos erroneos en una entrada donde por ejemplo
+        se espera un entero.
+    */
+
+    int numero;
+    
+    // VERIFICAR SI scanf() FALLA, DE SER ASI SE PIDE LA ENTRADA 
+    // NUEVAMENTE Y SE IMPRIME UN MENSAJE DE ERROR
+    while (scanf("%d", &numero) != 1) {
+        printf("[ERROR] Debe ingresar una entrada válida.\n");
+
+        // LIMPIAR LA ENTRADA PARA LEER LA VARIABLE "LIMPIA"
+        // SIN LA INFORMACION ANTERIOR
+        while (getchar() != '\n');
+    }
+    
+    return numero;
+
+}
+
+float leerNumeroFlotante() {
+    // FUNCION PARA LEER UN DATO TIPO FLOTANTE VALIDO
+    /*
+        scanf() retorna el valor de 1 si leyo los datos de forma correcta,
+        en caso de que se le ingrese un dato que sea distinto a lo esperado
+        este retorna 0.
+
+        Con este concepto se puede validar y evitar bucles infinitos al
+        ingresar datos de tipos erroneos en una entrada donde por ejemplo
+        se espera un entero.
+    */
+
+    float numero;
+
+    // VERIFICAR SI scanf() FALLA, DE SER ASI SE PIDE LA ENTRADA 
+    // NUEVAMENTE Y SE IMPRIME UN MENSAJE DE ERROR
+    while (scanf("%f", &numero) != 1) {
+        printf("[ERROR] Debe ingresar una entrada válida.\n");
+
+        // LIMPIAR LA ENTRADA PARA LEER LA VARIABLE "LIMPIA"
+        // SIN LA INFORMACION ANTERIOR
+        while (getchar() != '\n');
+    }
+    
+    return numero;
+
 }
 
 // ===========

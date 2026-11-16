@@ -94,7 +94,7 @@ void imprimirBorde();
 void limpiarPantalla();
 void volverAlMenu();
 void mostrarMenu();
-void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario, float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
+void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
@@ -313,6 +313,7 @@ int main() {
 
 void imprimirTitulo(char titulo[64])
 {
+    // FUNCION PARA IMPRIMIR TITULOS CON FORMATO AUTOMATIZADO Y CENTRADOS
 
     int pos_texto = ((int)(MAX_BORDER / 2)) - ((int)(strlen(titulo) / 2));
 
@@ -339,7 +340,8 @@ void imprimirTitulo(char titulo[64])
 }
 
 void imprimirSubtitulo(char subtitulo[64]) {
-    
+    // FUNCION PARA IMPRIMIR SUBTITULOS CENTRADOS
+
     int pos_texto = ((int)(MAX_BORDER / 2)) - ((int)(strlen(subtitulo) / 2));
 
     for (int i = 0; i < MAX_BORDER; i++) {
@@ -360,6 +362,8 @@ void imprimirSubtitulo(char subtitulo[64]) {
 }
 
 void imprimirBorde() {
+    // IMPRIMIR BORDES DE LOS TITULOS
+
     for (int i = 0; i < MAX_BORDER; i++) {
         printf("%c", CHAR_LINE);
     }
@@ -431,6 +435,8 @@ void mostrarMenu() {
 }
 
 void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
+    // FUNCION PARA MOSTRAR LAS ESTADISTICAS DE LOS DATOS
+
 
     float consumoTotalDeHogares = 0,
           consumoTotalHogarAnterior = 0,
@@ -464,9 +470,9 @@ void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
 
     }
     
-    printf("\n» Total de los hogares: %.2f L\n", consumoTotalDeHogares);
-    printf("» Total de días con exceso: %d\n", totalDiasExceso);
-    printf("» Hogar con mayor consumo: %s\n", nombre[indexHogarMayorConsumo]);
+    printf("\n» Consumo total de los hogares: %.2f L\n", consumoTotalDeHogares);
+    printf("» Total de días con exceso de consumo: %d\n", totalDiasExceso);
+    printf("» Hogar con mayor el consumo: %s\n", nombre[indexHogarMayorConsumo]);
     printf("\n┌ Promedio de litros por persona (L/PP) diario:\n");
 
     for (int i = 0; i < DIAS_SEMANA; i++) {
@@ -489,6 +495,10 @@ void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
 
     volverAlMenu();
     limpiarPantalla();
+}
+
+void mostrarAcercaDeAyuda() {
+    // FUNCION PARA MOSTRAR ACERCA DE Y AYUDA
 }
 
 void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
@@ -518,6 +528,7 @@ void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float 
 }
 
 void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
+    // FUNCION PARA CARGAR LOS DATOS DEL ARCHIVO .TXT A LOS ARREGLOS Y VARIABLES CORRESPONDIENTES
 
     datos = fopen(nombre_datos, "r");
     if (datos == NULL) {
@@ -575,6 +586,7 @@ void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
 }
 
 void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
+    // FUNCION PARA GUARDAR LOS DATOS DE LOS ARREGLOS Y VARIABLES CORRESPONDIENTES EN EL ARCHIVO .TXT
 
     datos = fopen(nombre_datos, "w");
 
@@ -891,6 +903,7 @@ int Operacion_Principal(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], flo
 // --------- //
 
 int obtener_datos() {
+    // FUNCION PARA OBTENER LA CANTIDAD DE DATOS DESDE EL ARCHIVO .TXT
 
     int cantidad_datos = 0;
     
@@ -907,10 +920,13 @@ int obtener_datos() {
 }
 
 int aumentar_cantidad_datos() {
+    // FUNCION PARA AUMENTAR LA CANTIDAD DE DATOS DE LA VARIABLE GLOBAL CANTIDAD_DATOS
+
     return CANTIDAD_DATOS += 1;
 }
 
 void imprimir_espacios(int cantidad, int tipo) {
+    // FUNCION PARA IMPRIMIR ESPACIOS CON UN FORMATO EN ESPECIFICO
 
     if (tipo == 1) {
         for (int i = 0; i < cantidad; i++) {
@@ -929,6 +945,8 @@ void imprimir_espacios(int cantidad, int tipo) {
 }
 
 void ods_info() {
+    // FUNCION PARA MOSTRAR LA INFORMACION DEL ODS
+
     imprimirTitulo("ODS 6: Agua Limpia y Saneamiento");
     printf("\n");
     printf("Mas de medio millon de personas no tiene acceso a agua  potable\n");
@@ -947,6 +965,7 @@ void ods_info() {
 }
 
 void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_SEMANA]){
+    // FUNCION PARA VER LA TABLA DE DATOS DE LA MATRIZ
 
     float total_fila = 0;
     int maxNameLen = 0,
@@ -1022,6 +1041,7 @@ void ver_tabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_
 }
 
 void cabecera_tabla(int maxNameLen) {
+    // FUNCION PARA IMPRIMIR LA CABECERA DE LA TABLA DE DATOS
 
     int espacios = maxNameLen + 1;
 

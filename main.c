@@ -617,6 +617,8 @@ int leerNumeroEntero() {
     // NUEVAMENTE Y SE IMPRIME UN MENSAJE DE ERROR
     while (scanf("%d", &numero) != 1) {
         printf("[ERROR] Debe ingresar una entrada válida.\n");
+        printf("        Por favor ingrese el valor nuevamente.\n");
+        printf(">> ");
 
         // LIMPIAR LA ENTRADA PARA LEER LA VARIABLE "LIMPIA"
         // SIN LA INFORMACION ANTERIOR
@@ -645,6 +647,8 @@ float leerNumeroFlotante() {
     // NUEVAMENTE Y SE IMPRIME UN MENSAJE DE ERROR
     while (scanf("%f", &numero) != 1) {
         printf("[ERROR] Debe ingresar una entrada válida.\n");
+        printf("        Por favor ingrese el valor nuevamente.\n");
+        printf(">> ");
 
         // LIMPIAR LA ENTRADA PARA LEER LA VARIABLE "LIMPIA"
         // SIN LA INFORMACION ANTERIOR
@@ -769,7 +773,7 @@ void configurarElementos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
 /////////// REGISTRAR DATOS
 
 
-void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA])
+void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA])
 {
 
     /// FUNCION REGISTRAR DATOS PERMITE ESTABLECER EL CONSUMO DIARIO DE UN HOGAR
@@ -785,7 +789,7 @@ void Registrar_Datos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float 
     printf("\n");
     printf("| Nombre del hogar\n >> "); //// Nombre del hogar para editar
     scanf("%s", temp_nombre_hogar); //// ingresamos el nombre del hogar (TIENE que existir, si no, se repite la pregunta)
-    resultado_busqueda = Buscar_Hogar(temp_nombre_hogar, nombre);   /// si el resultado de busqueda no coincide con el nombre de un hogar existente
+    resultado_busqueda = buscarHogar(temp_nombre_hogar, nombre);   /// si el resultado de busqueda no coincide con el nombre de un hogar existente
                                                             /// volvemos a preguntar
     if (resultado_busqueda == -1)
     {
@@ -857,7 +861,7 @@ void modificarDato(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float li
     printf("\n");
     printf("| Nombre del hogar\n |>> "); //// Nombre del hogar para editar
     scanf("%s", temp_nombre_hogar); //// ingresamos el nombre del hogar (TIENE que existir, si no, se repite la pregunta)
-    resultado_busqueda = Buscar_Hogar(temp_nombre_hogar, nombre);   /// si el resultado de busqueda no coincide con el nombre de un hogar existente
+    resultado_busqueda = buscarHogar(temp_nombre_hogar, nombre);   /// si el resultado de busqueda no coincide con el nombre de un hogar existente
                                                             /// volvemos a preguntar
     if (resultado_busqueda == -1)
     {
@@ -1109,4 +1113,7 @@ void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float lim
 
 void mostrarAcercaDeAyuda() {
     // FUNCION PARA MOSTRAR ACERCA DE Y AYUDA
+
+    imprimirTitulo("AYUDA Y ACERCA DE");
+
 }

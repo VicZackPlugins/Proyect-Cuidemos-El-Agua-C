@@ -128,9 +128,6 @@ int main() {
         
         // LEER LA ENTRADA DEL USUARIO
         opciones = leerOpcionMenu();
-
-        // LIMPIAR EL INGRESO DE LA TECLA ENTER
-        fflush(stdin);
         
         switch(opciones) {
             
@@ -261,17 +258,50 @@ int main() {
 void imprimirTitulo(char titulo[64])
 {
     // FUNCION PARA IMPRIMIR TITULOS CON FORMATO AUTOMATIZADO Y CENTRADOS
+    /*
+        pos_texto = ((int)(MAX_BORDER / 2)) - ((int)(strlen(titulo) / 2));
+        
+        Esta variable lo que hace es calcular cuantos printf(" ") se deben
+        ejecutar antes de imprimir el titulo, de esta forma se deja el titulo
+        medianamente centrado.
+
+        Lo que se hace es dividir por 2 el largo del lugar donde se imprimira
+        el titulo
+
+        LARGO BORDE: 10 ########## ==> 5 #####
+
+        Luego se divide por 2 el largo del texto a introducir.
+
+        LAGO TEXTO: 6 °°°°°° ==> 3 °°°
+
+        Como tenemos ambas mitades, las consideramos como sus "Centros"
+        y las restamos, hacer esto nos asegura que el texto quede centrado,
+        en este caso la resta da 2, significa en se imprimira el titulo 
+        luego de 2 printf(" "). Ejemplo visual:
+
+        PRIMERA MITAD: ##°°°
+        SEGUNDA MITAD: °°°##
+        FINAL: ##°°°°°°##
+
+        Y como se ve, el "texto" quedaria centrado en un largo de 10 caracteres.
+
+    */
 
     int pos_texto = ((int)(MAX_BORDER / 2)) - ((int)(strlen(titulo) / 2));
 
+    // BUCLE REPETIDO 3 VECES PARA HACER 3 FILAS
     for (int i = 0; i < 3; i++) {
         
         for (int v = 0; v < MAX_BORDER; v++) {
+            // VERIFICAR SI ESTA EN LA LINEA CENTRAL PARA IMPRIMIR EL TITULO
             if (i == 1) {
+                // SI NO ESTA EN LA POSICION CALCULADA, IMPRIMIR ESPACIOS
                 if (v < pos_texto) {
                     printf(" ");
                     continue;
                 }
+                // SI ESTA EN LA POSICION CALCULADA, IMPRIMIR EL TITULO
+                // Y SALTAR A LA SIGUENTE FILA
                 else if (v == pos_texto) {
                     printf("%s", titulo);
                     break;
@@ -288,6 +318,9 @@ void imprimirTitulo(char titulo[64])
 
 void imprimirSubtitulo(char subtitulo[64]) {
     // FUNCION PARA IMPRIMIR SUBTITULOS CENTRADOS
+
+    // MISMA LOGICA QUE imprimirTitulo()
+    // PERO EN UNA UNICA LINEA
 
     int pos_texto = ((int)(MAX_BORDER / 2)) - ((int)(strlen(subtitulo) / 2));
 
@@ -311,6 +344,8 @@ void imprimirSubtitulo(char subtitulo[64]) {
 void imprimirBorde() {
     // IMPRIMIR BORDES DE LOS TITULOS
 
+    // IMPRIMIR CARACTER POR CARACTER DE FORMA HORIZONTAL
+    // PARA USAR EN imprimirTitulo()
     for (int i = 0; i < MAX_BORDER; i++) {
         printf("%c", CHAR_LINE);
     }
@@ -320,16 +355,28 @@ void imprimirBorde() {
 
 void imprimirEspacios(int cantidad, int tipo) {
     // FUNCION PARA IMPRIMIR ESPACIOS CON UN FORMATO EN ESPECIFICO
+    /*
+        Esta funcion tiene mas proposito para la funcion
+        verTabla(), en donde se deben inprimir espacios para rellenar
+        y mantener la estetica cuadrada de la tabla o "espacios" con
+        diseño de linea.
+    */
 
+
+    // SI SE SELECCIONA EL TIPO 1 SE IMPRIME EL CARACTER DE ESPACIO
     if (tipo == 1) {
         for (int i = 0; i < cantidad; i++) {
             printf("%c", CHAR_SPACE);
         }
         return;
     }
-
+    // SI SE SELECCIONA EL TIPO 2 SE IMPRIME EL CARACTER DE LINEA HORIZONTAL
     if (tipo == 2) {
         for (int i = 0; i < cantidad; i++) {
+            // SE IMPRIME EL CARACTER ENTRE "" EN VEZ DE ''
+            // DEBIDO A QUE SE USO CODIGO ASCII Y ESTE ALGUNAS VECES
+            // SE DETECTA COMO "STRING" Y NO COMO CARACTER DEBIDO A SU TAMAÑO
+            // EN BYTES
             printf("%s", CHAR_TABLE);
         }
         return;
@@ -348,7 +395,7 @@ void imprimirCabeceraTabla(int maxNameLen) {
 
     imprimirEspacios(espacios, 1);
     
-    printf("│ DIA 1   │ DIA 2   │ DIA 3   │ DIA 4   │ DIA 5   │ DIA 6   │ DIA 7   │ TOTAL    │\n");
+    printf("│ DÍA 1   │ DÍA 2   │ DÍA 3   │ DÍA 4   │ DÍA 5   │ DÍA 6   │ DÍA 7   │ TOTAL    │\n");
 
     imprimirEspacios(espacios, 2);
 
@@ -442,28 +489,63 @@ void iniciarArreglos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float 
 
 void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]) {
     // FUNCION PARA CARGAR LOS DATOS DEL ARCHIVO .TXT A LOS ARREGLOS Y VARIABLES CORRESPONDIENTES
+    /*
+        Se opto por el uso de fgets() combinado de sscanf() para leer
+        los datos del archivo con menos posibilidad de error en comparacion
+        al fscanf() el cual puede llegar a corromper el programa mas facilmente
 
+        - Primero se utiliza el fgets(BUFFER, TAMAÑO DEL BUFFER, ARCHIVO) dentro
+          de un bucle while mientras fgets() != NULL, estos nos asegura que se
+          lean las lineas (Desde el primer caracter hasta detectar un salto de linea) 
+          hasta el final del archivo (EOF).
+        
+        - Luego se utiliza sscanf(STRING, FORMATO, VARIBALE A GUARDAR) que lee
+          la cadena de texto buffer[128] de manera formateada y guarda ese valor
+          en una variable determinada.
+
+        Adicionalmente se creo una variable auxiliar linea = 1 e index = 0, para
+        hacer verificaciones y evitar errores de lectura en las lineas del archivo.
+    */
+    
+    // ABRIR EL ARCHIVO
     datos = fopen(nombre_datos, "r");
+    // VALIDAR SI EL ARCHIVO NO EXISTE O HUBO ERRORES AL ABRIRLO
     if (datos == NULL) {
         printf("[AVISO] No hay datos guardados, se inicia vacio.\n");
 
+        // EN CASO DE ERROR O QUE NO EXISTIERA, LO CREAMOS
         fopen(nombre_datos, "w");
         if (datos != NULL) fclose(datos);
 
         return;
     }
 
+    // DAMOS UN TAMAÑO DE BUFFER SUFICIENTE PARA QUE LEA TODA UNA LINEA ENTERA
+    // USAMOS 128 DEBIDO A QUE LO MAXIMO QUE ALCANZARIA LA LINEA MAS LARGA SERIA APROX 96 CHARS
     char buffer[128];
 
+    // DEFINIMOS VARIABLES AUXILIARES DE POSICION, CON ELLAS SABREMOS EN QUE LINEA 
+    // NOS ENCONTRAMOS Y QUE INDICE LE CORRESPONDE A CADA VECTOR
     int linea = 1, index = 0;
 
     while(fgets(buffer, sizeof(buffer), datos) != NULL) {
+        // SI ESTAMOS EN LA LINEA 1 LEEMOS LA CANTIDAD DE DATOS
         if (linea == 1) {
             sscanf(buffer, "%d", &CANTIDAD_DATOS);
             linea++;
             continue;
         }
 
+        // SI ESTAMOS ENTRE LA LINEA 2 Y EL ULTIMO ELEMENTO (OJO: NO ULTIMA LINEA) EJ:
+        /*
+            1 | 2                           _
+            2 | HOGAR_1 20 100.000000        |_______ LEEREMOS ESTAS LINEAS, LA 2 Y 3
+            3 | HOGAR_2 12 3500.050049      _|
+            4 | 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+            5 | 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+        
+        */
+        // LEEMOS EL FORMATO DEL ELEMENTO: NOMBRE DEL HOGAR - CANTIDAD DE PERSONAS - LIMITE DIARIO
         if (linea <= (CANTIDAD_DATOS + 1)) {
             sscanf(buffer, "%s %d %f", nombre[index], &personas[index], &limiteDiario[index]);
             index++;
@@ -474,6 +556,17 @@ void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
             continue;
         }
 
+        // SI ESTAMOS ENTRE LAS LINEAS DE LAS MATRICES QUE CORRESPONDEN A LA CANTIDAD DE DATOS + 1 
+        // Y LA ULTIMA LINEA EJ:
+        /*
+            1 | 2
+            2 | HOGAR_1 20 100.000000
+            3 | HOGAR_2 12 3500.050049                                          _
+            4 | 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000   |_______ LEEREMOS ESTAS LINEAS, LA 4 Y 5
+            5 | 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000  _|
+        
+        */
+        // LEEMOS EL FORMATO DE LA FILA DE MATRIZ, QUE ES DEL DIA 1 AL DIA 7
         if (linea > (CANTIDAD_DATOS + 1)) {
             for (int i = 0; i < DIAS_SEMANA; i++) {
                 sscanf(buffer, "%f %f %f %f %f %f %f", 
@@ -603,6 +696,9 @@ int leerOpcionMenu() {
         while (getchar() != '\n');
     }
     
+    // LIMPIAR EL INGRESO DE LA TECLA ENTER
+    fflush(stdin);
+
     return opcion;
 
 }
@@ -632,6 +728,9 @@ int leerNumeroEntero() {
         // SIN LA INFORMACION ANTERIOR
         while (getchar() != '\n');
     }
+
+    // LIMPIAR EL INGRESO DE LA TECLA ENTER
+    fflush(stdin);
     
     return numero;
 
@@ -663,6 +762,9 @@ float leerNumeroFlotante() {
         while (getchar() != '\n');
     }
     
+    // LIMPIAR EL INGRESO DE LA TECLA ENTER
+    fflush(stdin);
+
     return numero;
 
 }
@@ -953,14 +1055,23 @@ void mostrarTabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DI
     // FUNCION PARA VER LA TABLA DE DATOS DE LA MATRIZ
 
     float total_fila = 0;
+
+    // VARIABLE PARA SABER EL LARGO MAXIMO DEL NOMBRE DE UN HOGAR
+    // Y ASI ACOMODAR LA TABLA PARA EVITAR DESFACES
     int maxNameLen = 0,
+    
+    // VARIABLE PARA CALCULAR EL LOGATIRMO EN BASE 10 DE UN NUMERO
+    // Y DE ESTA FORMA SABER CUANTOS DIGITOS TIENE EL NUMERO.
         log_num = 0,
+    
+    // GUARDAR LA LOGITUD DE NUMERO CALCULADA EN log_num
         longitud_numero = 0;
 
     imprimirTitulo("TABLA DIAS");
     imprimirSubtitulo("Todos los valores representan Litros");
     printf("\n");
 
+    // ENCONTRAR EL NOMBRE MAS LARGO Y SU VALOR DE LONGITUD
     for (int i = 0; i < CANTIDAD_DATOS; i++) {
         
         if (strlen(nombre[i]) > maxNameLen) {
@@ -969,6 +1080,9 @@ void mostrarTabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DI
 
     }
 
+    // LLAMAR A LA FUNCION PARA IMPRIMIR LA CABECERA DE LA TABLA Y PASARLE
+    // LOS ESPACIOS QUE DEBERA RELLENAR EN CASO DE QUE UN NOMBRE SEA MAS CORTO
+    // QUE EL NOMBRE MAS LARGO
     imprimirCabeceraTabla(maxNameLen);
 
     for (int i = 0; i < CANTIDAD_DATOS; i++)
@@ -984,10 +1098,14 @@ void mostrarTabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DI
 
             printf("%.2f ", consumo_litros[i][j]);
             
+            // SI EL CONSUMO DE LITROS EN 0, PONEMOS EL log_num en 0
+            // PARA EVITAR ERRORES AL CALCULAR LOG10 DE 0.
             if (consumo_litros[i][j] == 0) log_num = 0;
             else log_num = log10(consumo_litros[i][j]);
             longitud_numero = round(log_num + 1);
 
+            // IMPRIMIR LOS ESPACIOS RESTANTES, COMO LOS VALORES SE ANCLAN A 5000 COMO MAX
+            // SOLO HAY QUE RELLENAR SI EL NUMERO ES MENOR A ESOS 4 DIGITOS
             imprimirEspacios((4 - longitud_numero), 1);
 
             if ((j+1) % 2 != 0) printf("│ ");
@@ -998,11 +1116,15 @@ void mostrarTabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DI
         }
 
         printf("%.2f", total_fila);
-        
+
+        // SI EL CONSUMO DE LITROS EN 0, PONEMOS EL log_num en 0
+        // PARA EVITAR ERRORES AL CALCULAR LOG10 DE 0.
         if (total_fila == 0) log_num = 0;
         else log_num = log10(total_fila);
         longitud_numero = round(log_num + 1);
         
+        // IMPRIMIR LOS ESPACIOS RESTANTES, COMO LA SUMA DE VALORES QUEDA EN 35000 COMO MAX
+        // SOLO HAY QUE RELLENAR SI EL NUMERO ES MENOR A ESOS 5 DIGITOS
         imprimirEspacios((5 - longitud_numero), 1);
 
         printf(" │");

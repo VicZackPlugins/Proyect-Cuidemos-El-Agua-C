@@ -218,7 +218,7 @@ int main() {
                 limpiarPantalla();
 
                 guardarDatos(nombre, personas, limiteDiario, consumoLitros);
-                printf("[AVISO] Datos guardados de manera satisfactoria.\n");
+                printf("[AVISO] Datos guardados de manera satisfactoria.\n\n");
 
                 break;
             }
@@ -231,7 +231,7 @@ int main() {
             }
             default: {
                 limpiarPantalla();
-                printf("[ERROR] Debe ingresar una opción válida.\n");
+                printf("[ERROR] Debe ingresar una opción válida.\n\n");
             }
 
         }
@@ -333,8 +333,6 @@ void imprimirSubtitulo(char subtitulo[64]) {
             printf("%s", subtitulo);
             break;
         }
-
-        printf("%c", CHAR_LINE);
     }
 
     printf("\n");
@@ -587,7 +585,7 @@ void cargarDatosArchivos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], fl
 
     fclose(datos);
 
-    printf("[AVISO] Datos cargados correctamente.\n");
+    printf("[AVISO] Datos cargados correctamente.\n\n");
 
 }
 
@@ -987,7 +985,7 @@ void registrarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float l
             ////// solicitamos el dia de la semana del cual se desea configurar su consumo diario
             ///// tiene que respetar el rango de dias semanales, (entre 1 y el maximo especificado en
             ///// la variable global DIAS_SEMANA)
-            printf("\n│ Ingrese el dia de la semana que desea configurar\n│ (Día 1 hasta día %d)\n│ >> ", DIAS_SEMANA);
+            printf("│ Ingrese el dia de la semana que desea configurar: \n│ (Día 1 hasta día %d)\n│ >> ", DIAS_SEMANA);
             temp_dias_seleccion=leerNumeroFlotante();
             dias_seleccion=(int)round(temp_dias_seleccion);
             //// si el dia ingresado no respeta el rango, o, ya se establecio el valor
@@ -1069,7 +1067,7 @@ void modificarDato(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float li
     imprimirSubtitulo("Modifica un dato ya");
     imprimirSubtitulo("establecido para un hogar");
     printf("\n");
-    printf("| Nombre del hogar\n |>> ");
+    printf("│ Nombre del hogar\n│ >> ");
     //// nuevamente preguntamos por el nombre del hogar y buscamos si existe
     //// si no, se devuelve al menu para crear un hogar, con el proposito
     /// de evitar bucles infinitos
@@ -1079,17 +1077,10 @@ void modificarDato(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float li
     if (resultado_busqueda == -1)
     {
         limpiarPantalla();
-        printf("[ERROR] Hogar de nombre [ %s ] no encontrado \n", temp_nombre_hogar);
-        printf("Crea el hogar para poder editar sus elementos\n"); 
+        printf("[ERROR] Hogar de nombre %s no fue encontrado.\n", temp_nombre_hogar);
+        printf("        Configura el hogar para poder modificar un dato.\n"); 
         printf("\n");
-        return;
-    }
-    //// o si no hay consumos que podamos editar, volvemos al menu para crear uno
-    if(consumoLitros[resultado_busqueda][dias_seleccion-1]==0)
-    {
-        limpiarPantalla();
-        printf("[ERROR] Este hogar no posee ningun consumo que modificar");
-        printf("\n");  
+
         return;
     }
 
@@ -1099,46 +1090,66 @@ void modificarDato(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float li
     {
         limpiarPantalla();
         imprimirTitulo("MODIFICAR UN DATO");
-        imprimirSubtitulo("Modifica el consumo diario para un dia en especifico");
+        imprimirSubtitulo("Modifica el consumo diario para un dia");
         printf("\n");
         //// damos los avisos correspondientes sobre la modificacion del hogar
-        printf("[AVISO] Editando el hogar \"%s\"\n", temp_nombre_hogar);
+        printf("[AVISO] Modificando el hogar: %s\n\n", temp_nombre_hogar);
         do 
         {
             ///// nuevamente solicitamos los dias de la semana
             //// el rango tiene que ser respetado, si no, volvemos a solicitar un dia valido
             //// entre 1 y el maximo establecido
-            printf("\nIngresa el dia de la semana que deseas configurar (de 1 hasta %d)\n", DIAS_SEMANA);
-            printf("\n >> ");
+            
+            printf("│ Ingrese el dia de la semana que desea configurar: \n│ (Día 1 hasta día %d)\n│ >> ", DIAS_SEMANA);
             temp_dias_seleccion=leerNumeroFlotante();
             dias_seleccion=(int)round(temp_dias_seleccion);
             if(dias_seleccion>DIAS_SEMANA || dias_seleccion<1)
             {
+                limpiarPantalla();
+                printf("[ERROR] Valor fuera de rango.\n");
+                printf("        Por favor igrese un valor entre 1 y %d.\n", DIAS_SEMANA);  
+                imprimirTitulo("MODIFICAR UN DATO");
+                imprimirSubtitulo("Modifica el consumo diario para un dia");
                 printf("\n");
-                printf("[ERROR] Valor fuera de rango, porfavor inserta un valor entre 0 y %d.\n", DIAS_SEMANA);  
             }
         }while(dias_seleccion>DIAS_SEMANA || dias_seleccion<1);
+
+        //// o si no hay consumos que podamos editar, volvemos al menu para crear uno
+        if(consumoLitros[resultado_busqueda][dias_seleccion-1]==0)
+        {
+            limpiarPantalla();
+            printf("[ERROR] El hogar %s no posee ningún consumo que modificar.\n", temp_nombre_hogar);
+            printf("        Registra un dato del hogar para poder modificar un dato.\n"); 
+            printf("\n");  
+            return;
+        }
+
         do
         {
             ///// si el dia es valido, solicitamos el nuevo consumo para cambiar
             //// junto con dar el consumo anterior como referencia
-            printf("\nRemplaza el consumo diario para este hogar en el dia %d (limite maximo: %d)", dias_seleccion, LIM_LITRO);
-            printf("\nConsumo diario actual: %1.f", consumoLitros[resultado_busqueda][dias_seleccion-1]);
-            printf("\n >> ");
+            printf("\n│ Remplaza el consumo para en el día: %d (Límite: %d L)\n", dias_seleccion, LIM_LITRO);
+            printf("│ Consumo diario actual: %.2f\n", consumoLitros[resultado_busqueda][dias_seleccion-1]);
+            printf("│ Ingrese nuevo valor: \n│ >> ");
             //// nuevamente prevenimos errores por ingresar string
             consumo_seleccion=leerNumeroFlotante();
-            if (consumo_seleccion>LIM_LITRO)
+            if (consumo_seleccion < 0 || consumo_seleccion>LIM_LITRO)
             {
+                limpiarPantalla();
+                printf("[ERROR] Valor fuera de rango.\n");
+                printf("        Por favor igrese un valor entre 0 y %d.\n", LIM_LITRO);  
+                imprimirTitulo("MODIFICAR UN DATO");
+                imprimirSubtitulo("Modifica el consumo diario para un dia");
                 printf("\n");
-                printf("[ERROR] Valor fuera de rango, porfavor inserta un valor entre 0 y %d.\n", LIM_LITRO);  
             }
-        }while(consumo_seleccion>LIM_LITRO);
+        }while(consumo_seleccion < 0 || consumo_seleccion>LIM_LITRO);
+        
         //// El consumo de litros del hogar en el dia especificado se remplaza por el que ingresamos ahora
         consumoLitros[resultado_busqueda][dias_seleccion-1]= consumo_seleccion;
         limpiarPantalla();
         //// Damos el aviso de que se ha modificado el dato con exito
-        printf("[AVISO] Consumo establecido a: %1.f  para el dia %d\n", consumo_seleccion, dias_seleccion);
-        printf("[AVISO] Datos para el hogar: \"%s\" guardados con exito\n", temp_nombre_hogar);
+        printf("[AVISO] Consumo del día %d establecido a: %.2f\n", dias_seleccion, consumo_seleccion);
+        printf("        Datos guardados para el hogar %s\n", temp_nombre_hogar);
         //// guardamos y reiniciamos variables
         guardarDatos(nombre, personas, limiteDiario, consumoLitros);
         consumo_seleccion=0;
@@ -1156,8 +1167,8 @@ void operacionPrincipal(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], flo
     /// imprimimos titulos (estetico)
 
     imprimirTitulo("EXCESOS Y FUGAS");
-    imprimirSubtitulo("Verifica si el hogar contiene");
-    imprimirSubtitulo("algun exceso o fuga");
+    imprimirSubtitulo("Verifica si los hogar tienen");
+    imprimirSubtitulo("algún exceso o fuga");
     printf("\n");
 
     //// dias exceso representa los dias en los que se supero el consumo
@@ -1172,7 +1183,7 @@ void operacionPrincipal(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], flo
     for(int i=0; i<CANTIDAD_DATOS; i++)
     {
         dias_exceso=verificacionExceso(i, limiteDiario, consumoLitros);
-        printf("\n%s: %d dia(s) de exceso", nombre[i], dias_exceso);
+        printf("\n%s: %d día(s) de exceso", nombre[i], dias_exceso);
         if(verificacionFuga(i, limiteDiario, consumoLitros))
         {
             ///// en el caso de que un dia sobrepase el doble del promedio
@@ -1199,7 +1210,13 @@ void mostrarTabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DI
         log_num = 0,
     
     // GUARDAR LA LOGITUD DE NUMERO CALCULADA EN log_num
-        longitud_numero = 0;
+        longitud_numero = 0,
+    
+    // LONGITUD MAXIMA QUE TENGAN LOS LITROS POR DIA
+        longitud_maxima = round(log10(LIM_LITRO)),
+    
+    // LONGITUD MAXIMA DE LA SUMA TOTAL DE LITROS POR DIA
+        longitud_maxima_suma = round(log10(LIM_LITRO*DIAS_SEMANA));
 
     imprimirTitulo("TABLA DIAS");
     imprimirSubtitulo("Todos los valores representan Litros");
@@ -1240,7 +1257,7 @@ void mostrarTabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DI
 
             // IMPRIMIR LOS ESPACIOS RESTANTES, COMO LOS VALORES SE ANCLAN A 5000 COMO MAX
             // SOLO HAY QUE RELLENAR SI EL NUMERO ES MENOR A ESOS 4 DIGITOS
-            imprimirEspacios((4 - longitud_numero), 1);
+            imprimirEspacios((longitud_maxima - longitud_numero), 1);
 
             if ((j+1) % 2 != 0) printf("│ ");
 
@@ -1259,7 +1276,7 @@ void mostrarTabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DI
         
         // IMPRIMIR LOS ESPACIOS RESTANTES, COMO LA SUMA DE VALORES QUEDA EN 35000 COMO MAX
         // SOLO HAY QUE RELLENAR SI EL NUMERO ES MENOR A ESOS 5 DIGITOS
-        imprimirEspacios((5 - longitud_numero), 1);
+        imprimirEspacios((longitud_maxima_suma - longitud_numero), 1);
 
         printf(" │");
 

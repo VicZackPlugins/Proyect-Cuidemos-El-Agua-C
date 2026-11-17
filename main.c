@@ -82,6 +82,7 @@ void operacionPrincipal(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], flo
 void mostrarTabla(char nombre[MAX_DATOS][32], float consumo_litros[MAX_DATOS][DIAS_SEMANA]);
 void mostrarEstadisticas(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
 void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float limiteDiario[MAX_DATOS], float consumoLitros[MAX_DATOS][DIAS_SEMANA]);
+void mostrarAyudaYAcercaDe();
 
 /* ===============================
 
@@ -227,6 +228,7 @@ int main() {
             case 9: {
                 // Ayuda y Acerca de
                 limpiarPantalla();
+                mostrarAyudaYAcercaDe();
 
                 break;
             }
@@ -1111,9 +1113,37 @@ void guardarDatos(char nombre[MAX_DATOS][32], int personas[MAX_DATOS], float lim
 
 }
 
-void mostrarAcercaDeAyuda() {
+void mostrarAyudaYAcercaDe() {
     // FUNCION PARA MOSTRAR ACERCA DE Y AYUDA
 
     imprimirTitulo("AYUDA Y ACERCA DE");
+    
+    printf("\n");
+    printf("AYUDA:\n");
+    printf("\n");
+
+    printf("1. ¿Qué ODS aborda?         » Muestra información sobre el ODS.\n");
+    printf("2. Configurar elementos     » Ingresa los datos básicos de un nuevo hogar.\n");
+    printf("3. Registrar datos          » Ingresa un registros de litros para un día en un hogar.\n");
+    printf("4. Modificar un dato        » Corrige un dato ya registrado de litros para un día específico.\n");
+    printf("5. Detectar excesos y fugas » Indica cuantos días de exceso tiene un hogar y posible fuga.\n");
+    printf("6. Ver tabla                » Muestra los datos de litros por día\n");
+    printf("7. Estadísticas             » Muestra consumo total, hogar con mayor consumo,\n");
+    printf("                              promedio por persona por día y días con exceso.\n");
+    printf("8. Guardar datos            » Guarda todos los datos en el archivo.\n");
+    printf("9. Ayuda y Acerca de        » Muestra esta ayuda y la información del programa.\n");
+    printf("0. Salir                    » Guarda automáticamente y termina el programa.\n");
+    
+    printf("\n");
+    printf("ACERCA DE:\n");
+    printf("\n");
+    printf("Programa    » Cuidemos el Agua\n");
+    printf("Versión     » 26.3.1\n");
+    printf("ODS         » ODS 6 - Agua Limpia y Saneamiento\n");
+    printf("Curso       » Taller de Programación I\n");
+    printf("Integrantes » Vicente Barrientos, Juan José Machuca, Elías Pérez\n");
+
+    printf("\n");
+    volverAlMenu();
 
 }
